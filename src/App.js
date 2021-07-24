@@ -1,5 +1,6 @@
 import React from 'react';
 import WeatherInfo from './components/WeatherInfo';
+import WeatherDetails from './components/WeatherDetails';
 
 function App() {
   return (
@@ -32,36 +33,12 @@ function App() {
         <button>More info</button>
 
         <section className="details-info">
-        <li className="info">
-          <p><i class="fas fa-wind"></i></p>
-          <p>3m/s</p>
-          <p>Wind</p>
-        </li>
+          <WeatherDetails />
+          <WeatherDetails />
+          <WeatherDetails />
+          <WeatherDetails />
 
-        <li className="info">
-          <p><i class="fas fa-wind"></i></p>
-          <p>3m/s</p>
-          <p>Humidity</p>
-        </li>
-
-        <li className="info">
-          <p><i class="fas fa-wind"></i></p>
-          <p>3m/s</p>
-          <p>Pressure</p>
-        </li>
-
-        <li className="info">
-          <p><i class="far fa-sun"></i></p>
-          <p>3m/s</p>
-          <p>Sunrise</p>
-        </li>
-
-        <li className="info">
-          <p><i class="far fa-sun"></i></p>
-          <p>3m/s</p>
-          <p>Sunset</p>
-        </li>
-      </section>
+        </section>
       </section>
     
       <section className="week-info">
