@@ -1,3 +1,10 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Nunito', sans-serif, normal, normal;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -10,4 +17,45 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.font-strong {
+  font-weight: bolder;
+}
+
+.location-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.tempeture-info {
+  display: flex;
+
+}
+
+.weather-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.details-info {
+  display: flex;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 20px;
+  width: 70px;
+  height: 90px;
+  border-radius: 10px;
+  background-color: blueviolet;
+
+  font-size: 14px;
+}
+
+.week-info {
+  display: flex;
+  justify-content: center;
 }
