@@ -6,56 +6,83 @@
 }
 
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  background-color: #FCE19C;
+  color: #312915;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+h1 {
+  font-size: 5rem;
 }
 
-.font-strong {
-  font-weight: bolder;
+h3 {
+  font-size: 2rem;
 }
 
 .location-info {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 1.5rem 0;
+
+}
+
+.location-info input {
+  margin-left: 8px;
+  background-color: transparent;
+  border: transparent;
+  outline: transparent;
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.resume {
+  display: flex;
   flex-direction: column;
+  align-items: center;
+}
+
+.info-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .tempeture-info {
   display: flex;
-
 }
 
-.weather-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.details-info {
-  display: flex;
-}
-
-.info {
+.tempeture-info section {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 0 20px;
-  width: 70px;
-  height: 90px;
-  border-radius: 10px;
-  background-color: blueviolet;
-
-  font-size: 14px;
+  margin: 0 1rem;
 }
 
-.week-info {
+.details-section {
   display: flex;
-  justify-content: center;
+  margin: 1.25rem 0 0;
+}
+
+.toggle-button {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #312915;
+  background: none;
+  outline: none;
+  border: none;
+  margin-top: 2rem;
+}
+
+.week-section {
+  display: flex;
+  margin-top: 2.5rem;
+}
+
+.fa-circle {
+  font-size: 20rem;
 }

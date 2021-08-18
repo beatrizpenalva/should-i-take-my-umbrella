@@ -1,6 +1,6 @@
 import React from 'react';
-import WeatherInfo from './components/WeatherInfo';
-import WeatherDetails from './components/WeatherDetails';
+import WeatherInfo from './components/WeatherInfo/index';
+import WeatherDetails from './components/WeatherDetails/index';
 
 function App() {
   return (
@@ -12,48 +12,49 @@ function App() {
         </label>
       </form>
       
-      <i class="fas fa-circle"></i>
-      <p>Clear sky</p>
-
-      <section className="weather-info">
-        <h1>22º C</h1>
-
-        <section className="tempeture-info">
-          <section>
-            <p>min</p>
-            <h3>18º C</h3>
-          </section>
-
-          <section>
-            <p>max</p>
-            <h3>24º C</h3>
-          </section>
+      <section className="container">
+        <section className="resume">
+          <i class="fas fa-circle"></i>
+          <h3>Clear sky</h3>
         </section>
 
-        <button>More info</button>
+        <section className="info-container">
+          <h1>22º C</h1>
+          <section className="tempeture-info">
+            <section>
+              <p>min</p>
+              <h3>18ºC</h3>
+            </section>
 
-        <section className="details-info">
-          <WeatherDetails />
-          <WeatherDetails />
-          <WeatherDetails />
-          <WeatherDetails />
+            <section>
+              <p>max</p>
+              <h3>24ºC</h3>
+            </section>
+          </section>
 
+          <button className="toggle-button">More info<i class="fas fa-chevron-down"></i></button>
+          <section className="details-section">
+              <WeatherDetails />
+              <WeatherDetails />
+              <WeatherDetails />
+              <WeatherDetails />
+            </section>
         </section>
+      
+        <section className="week-section">
+        <WeatherInfo />
+        <WeatherInfo />
+        <WeatherInfo />
+        <WeatherInfo />
+        <WeatherInfo />
+        <WeatherInfo />
+        <WeatherInfo />
+        <WeatherInfo />
+        <WeatherInfo />
+        <WeatherInfo />
+        <WeatherInfo />
+        <WeatherInfo />
       </section>
-    
-      <section className="week-info">
-        <WeatherInfo />
-        <WeatherInfo />
-        <WeatherInfo />
-        <WeatherInfo />
-        <WeatherInfo />
-        <WeatherInfo />
-        <WeatherInfo />
-        <WeatherInfo />
-        <WeatherInfo />
-        <WeatherInfo />
-        <WeatherInfo />
-        <WeatherInfo />
       </section>
     </>
   );
