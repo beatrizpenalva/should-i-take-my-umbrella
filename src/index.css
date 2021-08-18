@@ -1,13 +1,108 @@
-body {
+* {
+  box-sizing: border-box;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+  font-family: 'Nunito', sans-serif, normal, normal;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+body {
+  background-color: #FCE19C;
+  color: #312915;
+  margin: 0 16px;
+}
+
+h1 {
+  font-size: 5rem;
+}
+
+h3 {
+  font-size: 2rem;
+}
+
+.location-info {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 1.5rem 0;
+}
+
+.location-info input {
+  margin-left: 8px;
+  background-color: transparent;
+  border: transparent;
+  outline: transparent;
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.resume {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.info-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tempeture-info {
+  display: flex;
+}
+
+.tempeture-info section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 1rem;
+}
+
+.details-section {
+  display: flex;
+  margin: 1.25rem 0 0;
+}
+
+.toggle-button {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #312915;
+  background: none;
+  outline: none;
+  border: none;
+  margin-top: 2rem;
+}
+
+.week-section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 2.5rem;
+}
+
+.fa-circle {
+  font-size: 20rem;
+}
+
+@media (max-width: 415px) { 
+  .fa-circle {
+    font-size: 8rem;
+  }
+
+  h1 {
+    font-size: 3rem;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+  }
+
+  .toggle-button {
+    font-size: 1.25rem;
+  }
 }

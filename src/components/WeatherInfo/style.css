@@ -1,0 +1,41 @@
+.week-info {
+    display: flex;
+    flex-direction: column;
+    margin: 0 8px;
+}
+
+.week-info h4 {
+    font-weight: lighter;
+}
+
+.temp-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 4rem;
+    border-radius: 8px;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.3);
+    font-size: 1rem;
+    font-weight: bold;
+    line-height: 1.2rem;
+}
+
+.icon {
+    margin-bottom: 4px;
+    font-size: 1.5rem;
+}
+
+.temp-min {
+    font-weight: lighter;
+}
+
+@media (max-width: 415px) { 
+    .temp-info, .icon {
+        font-size: .75rem;
+    }
+
+    .week-info {
+        margin: 0 4px;
+    }
+}
