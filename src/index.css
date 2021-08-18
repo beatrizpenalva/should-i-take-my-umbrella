@@ -8,6 +8,7 @@
 body {
   background-color: #FCE19C;
   color: #312915;
+  margin: 0 16px;
 }
 
 h1 {
@@ -23,7 +24,6 @@ h3 {
   flex-wrap: wrap;
   justify-content: center;
   margin: 1.5rem 0;
-
 }
 
 .location-info input {
@@ -80,9 +80,29 @@ h3 {
 
 .week-section {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   margin-top: 2.5rem;
 }
 
 .fa-circle {
   font-size: 20rem;
+}
+
+@media (max-width: 415px) { 
+  .fa-circle {
+    font-size: 8rem;
+  }
+
+  h1 {
+    font-size: 3rem;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+  }
+
+  .toggle-button {
+    font-size: 1.25rem;
+  }
 }
