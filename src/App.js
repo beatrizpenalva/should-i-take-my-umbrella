@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import WeatherInfo from "./components/WeatherInfo/index";
 import WeatherDetails from "./components/WeatherDetails/index";
-import { __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED } from "react-dom";
+// import { __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED } from "react-dom";
 
 function App() {
   const [city, setCity] = useState("");
@@ -11,7 +11,7 @@ function App() {
   const callAPI = (e) => {
     e.preventDefault();
     fetch(
-      `https://api.openweathermap.org/data/2.5/weather?q=${city.toLowerCase()}&APPID=7c8b054ddd8f88293b1e0e10e75ba18d`
+      `https://api.openweathermap.org/data/2.5/weather?q=${city.toLowerCase()}&units=metric&APPID=7c8b054ddd8f88293b1e0e10e75ba18d`
     )
       .then((response) => response.json())
       .then((res) => {
@@ -55,16 +55,16 @@ function App() {
         </section>
 
         <section className="info-container">
-          <h1>{weather.temp}C</h1>
+          <h1>{Math.round(weather.temp)} ºC</h1>
           <section className="tempeture-info">
             <section>
               <p>min</p>
-              <h3>{weather.temp_min}C</h3>
+              <h3>{Math.round(weather.temp_min)} ºC</h3>
             </section>
 
             <section>
               <p>max</p>
-              <h3>{weather.temp_max}ºC</h3>
+              <h3>{Math.round(weather.temp_max)} ºC</h3>
             </section>
           </section>
 
@@ -72,9 +72,9 @@ function App() {
             More info<i className="fas fa-chevron-down"></i>
           </button>
           <section className="details-section">
-            <WeatherDetails contents={"Humidity"} info={weather.humidity}/>
-            <WeatherDetails contents={"Pressure"} info={weather.pressure}/>
-            <WeatherDetails contents={"Wind"} info={weather.wind}/>
+            <WeatherDetails contents={"Humidity"} info={weather.humidity + "%"}/>
+            <WeatherDetails contents={"Pressure"} info={weather.pressure + "hPa"}/>
+            <WeatherDetails contents={"Wind"} info={weather.wind + "m/s"}/>
           </section>
         </section>
 
