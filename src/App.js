@@ -14,13 +14,14 @@ function App() {
       `https://api.openweathermap.org/data/2.5/weather?q=${city.toLowerCase()}&APPID=7c8b054ddd8f88293b1e0e10e75ba18d`
     )
       .then((response) => response.json())
-      .then((res) =>  {
+      .then((res) => {
         const weatherInfo = {
           description: res.weather[0].description,
           icon: res.weather[0].icon,
           temp: res.main.temp,
           temp_max: res.main.temp_max,
           temp_min: res.main.temp_min,
+
           humidity: res.main.humidity,
           pressure: res.main.pressure,
           wind: res.wind.speed,
@@ -50,20 +51,20 @@ function App() {
       <section className="container">
         <section className="resume">
           <i className="fas fa-circle"></i>
-          <h3>Clear sky</h3>
+          <h3>{weather.description}</h3>
         </section>
 
         <section className="info-container">
-          <h1>22º C</h1>
+          <h1>{weather.temp}C</h1>
           <section className="tempeture-info">
             <section>
               <p>min</p>
-              <h3>18ºC</h3>
+              <h3>{weather.temp_min}C</h3>
             </section>
 
             <section>
               <p>max</p>
-              <h3>24ºC</h3>
+              <h3>{weather.temp_max}ºC</h3>
             </section>
           </section>
 
@@ -71,10 +72,9 @@ function App() {
             More info<i className="fas fa-chevron-down"></i>
           </button>
           <section className="details-section">
-            <WeatherDetails />
-            <WeatherDetails />
-            <WeatherDetails />
-            <WeatherDetails />
+            <WeatherDetails contents={"Humidity"} info={weather.humidity}/>
+            <WeatherDetails contents={"Pressure"} info={weather.pressure}/>
+            <WeatherDetails contents={"Wind"} info={weather.wind}/>
           </section>
         </section>
 

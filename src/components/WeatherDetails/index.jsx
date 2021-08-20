@@ -1,12 +1,12 @@
 import React from "react";
 import "./style.css";
 
-const WeatherDetails = () => {
+const WeatherDetails = ({contents, info}) => {
     return (
         <section className="details-info">
             <i className="fas fa-wind icon"></i>
-            <p>3 m/s</p>
-            <p className="info">Wind</p>
+            <p>{info}</p>
+            <p className="info">{contents}</p>
         </section>
     )
 }
