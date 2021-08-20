@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import WeatherInfo from "./components/WeatherInfo/index";
 import WeatherDetails from "./components/WeatherDetails/index";
+import { __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED } from "react-dom";
 
 function App() {
   const [city, setCity] = useState("");
+  const [weather, setWeather] = useState({});
+//informações sobre o sol
 
   const callAPI = (e) => {
     e.preventDefault();
@@ -11,8 +14,20 @@ function App() {
       `https://api.openweathermap.org/data/2.5/weather?q=${city.toLowerCase()}&APPID=7c8b054ddd8f88293b1e0e10e75ba18d`
     )
       .then((response) => response.json())
-      .then((res) => console.log(res));
-    // .then(json => console.log(json))
+      .then((res) =>  {
+        const weatherInfo = {
+          description: res.weather[0].description,
+          icon: res.weather[0].icon,
+          temp: res.main.temp,
+          temp_max: res.main.temp_max,
+          temp_min: res.main.temp_min,
+          humidity: res.main.humidity,
+          pressure: res.main.pressure,
+          wind: res.wind.speed,
+        }
+
+        setWeather(weatherInfo)
+      });
   };
 
   const setCityInput = (event) => {
