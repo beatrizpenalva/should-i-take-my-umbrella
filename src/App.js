@@ -44,25 +44,26 @@ function App() {
   const getForecastWeather = (lat, lon) => {
     fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=7c8b054ddd8f88293b1e0e10e75ba18d`)
     .then((response) => response.json())
-    .then((res) => { console.log(res)
-      // for (let i = 1; i <=7; i++) {
-      //   console.log(res.daily)
-      // }
-    }
-    )
+    .then((res) => {
+      for (let i = 0; i <=7; i++) {
+        console.log(res.daily[i]) //objeto
+        console.log(new Date((res.daily[i].dt) * 1000)) // data
+      }
+    })
   }
 
   const getHistoricalWeather = (lat, lon) => {
     const todayTimestamp = (+Date.now() / 1000).toFixed(0)
-    const dayInMilliseconds = 24 * 60 * 60
-
+    const dayInSeconds = 24 * 60 * 60
     for (let i = 1; i <= 5; i++) {
-      let referenceDay = todayTimestamp - dayInMilliseconds * i
-      console.log(new Date(referenceDay))
+      let referenceDay = todayTimestamp - dayInSeconds * i 
+      
+      console.log(new Date(referenceDay * 1000)) //data
+
       fetch(`https://api.openweathermap.org/data/2.5/onecall/timemachine?lat=${lat}&lon=${lon}&dt=${referenceDay}&appid=7c8b054ddd8f88293b1e0e10e75ba18d`)
         .then((response) => response.json())
         .then((res) => {
-          console.log(res)
+          console.log(res) //objeto
         })
     }    
   }
