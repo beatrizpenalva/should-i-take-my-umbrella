@@ -4,10 +4,11 @@ import WeatherDetails from "./components/WeatherDetails/index";
 
 function App() {
   const [city, setCity] = useState("");
-  const [weather, setWeather] = useState({});
-//informações sobre o sol
+  const [currentWeather, setCurrentWeather] = useState({});
+  const [weatherData, setWeatherData] = useState([]);
+//informações sobre o sol (nascer e se por)
 
-  const currentWeather = (e) => {
+  const getCurrentWeather = (e) => {
     e.preventDefault();
     fetch(
       `https://api.openweathermap.org/data/2.5/weather?q=${city.toLowerCase()}&units=metric&APPID=7c8b054ddd8f88293b1e0e10e75ba18d`
@@ -15,7 +16,7 @@ function App() {
       .then((response) => response.json())
       .then((res) => {
 
-        const weatherInfo = {
+        const currentWeather = {
           description: res.weather[0].description,
           icon: res.weather[0].icon,
           temp: res.main.temp,
@@ -27,7 +28,7 @@ function App() {
           wind: res.wind.speed,
         }
 
-        setWeather(weatherInfo)
+        setCurrentWeather(currentWeather)
         getCordinates(city)
       });
   };
@@ -46,8 +47,8 @@ function App() {
     .then((response) => response.json())
     .then((res) => {
       for (let i = 0; i <=7; i++) {
-        console.log(res.daily[i]) //objeto
-        console.log(new Date((res.daily[i].dt) * 1000)) // data
+        setWeatherData(...weatherData, res.daily[i])
+        // console.log(new Date((res.daily[i].dt) * 1000)) // data
       }
     })
   }
@@ -58,12 +59,12 @@ function App() {
     for (let i = 1; i <= 5; i++) {
       let referenceDay = todayTimestamp - dayInSeconds * i 
       
-      console.log(new Date(referenceDay * 1000)) //data
+      //console.log(new Date(referenceDay * 1000)) //data
 
       fetch(`https://api.openweathermap.org/data/2.5/onecall/timemachine?lat=${lat}&lon=${lon}&dt=${referenceDay}&appid=7c8b054ddd8f88293b1e0e10e75ba18d`)
         .then((response) => response.json())
         .then((res) => {
-          console.log(res) //objeto
+          setWeatherData(...weatherData, res)
         })
     }    
   }
@@ -72,9 +73,11 @@ function App() {
     setCity(event.target.value);
   };
 
+  console.log(weatherData)
+
   return (
     <>
-      <form className="location-info" onSubmit={currentWeather}>
+      <form className="location-info" onSubmit={getCurrentWeather}>
         <label>
           What is your location?
           <input
@@ -88,20 +91,20 @@ function App() {
       <section className="container">
         <section className="resume">
           <i className="fas fa-circle"></i>
-          <h3>{weather.description}</h3>
+          <h3>{currentWeather.description}</h3>
         </section>
 
         <section className="info-container">
-          <h1>{Math.round(weather.temp)} ºC</h1>
+          <h1>{Math.round(currentWeather.temp)} ºC</h1>
           <section className="tempeture-info">
             <section>
               <p>min</p>
-              <h3>{Math.round(weather.temp_min)} ºC</h3>
+              <h3>{Math.round(currentWeather.temp_min)} ºC</h3>
             </section>
 
             <section>
               <p>max</p>
-              <h3>{Math.round(weather.temp_max)} ºC</h3>
+              <h3>{Math.round(currentWeather.temp_max)} ºC</h3>
             </section>
           </section>
 
@@ -109,9 +112,9 @@ function App() {
             More info<i className="fas fa-chevron-down"></i>
           </button>
           <section className="details-section">
-            <WeatherDetails contents={"Humidity"} info={weather.humidity + "%"}/>
-            <WeatherDetails contents={"Pressure"} info={weather.pressure + "hPa"}/>
-            <WeatherDetails contents={"Wind"} info={weather.wind + "m/s"}/>
+            <WeatherDetails contents={"Humidity"} info={currentWeather.humidity + "%"}/>
+            <WeatherDetails contents={"Pressure"} info={currentWeather.pressure + "hPa"}/>
+            <WeatherDetails contents={"Wind"} info={currentWeather.wind + "m/s"}/>
           </section>
         </section>
 
