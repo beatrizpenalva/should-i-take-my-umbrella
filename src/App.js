@@ -8,13 +8,14 @@ function App() {
   const [weather, setWeather] = useState({});
 //informações sobre o sol
 
-  const callAPI = (e) => {
+  const currentWeather = (e) => {
     e.preventDefault();
     fetch(
       `https://api.openweathermap.org/data/2.5/weather?q=${city.toLowerCase()}&units=metric&APPID=7c8b054ddd8f88293b1e0e10e75ba18d`
     )
       .then((response) => response.json())
       .then((res) => {
+
         const weatherInfo = {
           description: res.weather[0].description,
           icon: res.weather[0].icon,
@@ -28,16 +29,32 @@ function App() {
         }
 
         setWeather(weatherInfo)
+        getCordinates(city)
       });
   };
 
+  const getCordinates = (location) => {
+    fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${location}&appid=7c8b054ddd8f88293b1e0e10e75ba18d`)
+    .then((response) => response.json())
+    .then((res) => console.log(res))
+
+  }
+
+  // const callAPI = (lat, lon) => {
+  //   fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=7c8b054ddd8f88293b1e0e10e75ba18d`)
+  //     .then((response) => response.json())
+  //     .then((res) => {
+  //       console.log(res)
+  //     })
+  // }
+  
   const setCityInput = (event) => {
     setCity(event.target.value);
   };
 
   return (
     <>
-      <form className="location-info" onSubmit={callAPI}>
+      <form className="location-info" onSubmit={currentWeather}>
         <label>
           What is your location?
           <input
