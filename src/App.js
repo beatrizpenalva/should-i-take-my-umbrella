@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import WeatherInfo from "./components/WeatherInfo/index";
 import WeatherDetails from "./components/WeatherDetails/index";
-// import { __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED } from "react-dom";
 
 function App() {
   const [city, setCity] = useState("");
@@ -36,17 +35,37 @@ function App() {
   const getCordinates = (location) => {
     fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${location}&appid=7c8b054ddd8f88293b1e0e10e75ba18d`)
     .then((response) => response.json())
-    .then((res) => console.log(res))
-
+    .then((res) => {
+      getForecastWeather(res[0].lat, res[0].lon)
+      getHistoricalWeather(res[0].lat, res[0].lon)
+    })
   }
 
-  // const callAPI = (lat, lon) => {
-  //   fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=7c8b054ddd8f88293b1e0e10e75ba18d`)
-  //     .then((response) => response.json())
-  //     .then((res) => {
-  //       console.log(res)
-  //     })
-  // }
+  const getForecastWeather = (lat, lon) => {
+    fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=7c8b054ddd8f88293b1e0e10e75ba18d`)
+    .then((response) => response.json())
+    .then((res) => { console.log(res)
+      // for (let i = 1; i <=7; i++) {
+      //   console.log(res.daily)
+      // }
+    }
+    )
+  }
+
+  const getHistoricalWeather = (lat, lon) => {
+    const todayTimestamp = (+Date.now() / 1000).toFixed(0)
+    const dayInMilliseconds = 24 * 60 * 60
+
+    for (let i = 1; i <= 5; i++) {
+      let referenceDay = todayTimestamp - dayInMilliseconds * i
+      console.log(new Date(referenceDay))
+      fetch(`https://api.openweathermap.org/data/2.5/onecall/timemachine?lat=${lat}&lon=${lon}&dt=${referenceDay}&appid=7c8b054ddd8f88293b1e0e10e75ba18d`)
+        .then((response) => response.json())
+        .then((res) => {
+          console.log(res)
+        })
+    }    
+  }
   
   const setCityInput = (event) => {
     setCity(event.target.value);
