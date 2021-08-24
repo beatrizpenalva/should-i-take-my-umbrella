@@ -37,7 +37,7 @@ function App() {
     )
       .then((response) => response.json())
       .then((res) => {
-        getForecastWeather(res[0].lat, res[0].lon);
+        // getForecastWeather(res[0].lat, res[0].lon);
         getHistoricalWeather(res[0].lat, res[0].lon);
       });
   };
@@ -46,6 +46,8 @@ function App() {
     const todayTimestamp = (+Date.now() / 1000).toFixed(0);
     const dayInSeconds = 24 * 60 * 60;
     const previousDays = 5;
+    let weatherArr = []
+
     for (let i = 1; i <= previousDays; i++) {
       let referenceDay = todayTimestamp - dayInSeconds * i;
 
@@ -55,41 +57,43 @@ function App() {
         .then((response) => response.json())
         .then((res) => {
           
-          const getExtremesTemp = res.hourly.sort(function (a, b) {
+          const sortHourTemp = res.hourly.sort(function (a, b) {
             return a.temp < b.temp ? -1 : a.temp < b.temp ? 1 : 0;
           });
 
-          let weatherInfo = {
+          const weatherInfo = {
             date: new Date(referenceDay * 1000),
-            temp_min: getExtremesTemp[0],
-            temp_max: getExtremesTemp[23]
+            temp_min: sortHourTemp[0].temp,
+            temp_max: sortHourTemp[23].temp
           }
 
-          setWeatherData((weatherData) => [...weatherData, weatherInfo]);
+          // setWeatherData((weatherData) => [...weatherData, weatherInfo]);
+
+          weatherArr.push(weatherInfo)
         });
     }
+
+    console.log(weatherArr)
   };
 
-  const getForecastWeather = (lat, lon) => {
-    fetch(
-      `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=7c8b054ddd8f88293b1e0e10e75ba18d`
-    )
-      .then((response) => response.json())
-      .then((res) => {
-        for (let i = 0; i <= 7; i++) {
+  // const getForecastWeather = (lat, lon) => {
+  //   fetch(
+  //     `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=7c8b054ddd8f88293b1e0e10e75ba18d`
+  //   )
+  //     .then((response) => response.json())
+  //     .then((res) => {
+  //       for (let i = 0; i <= 7; i++) {
 
-          let weatherInfo = {
-            date: new Date((res.daily[i].dt) * 1000),
-            temp_min: res.daily[i].temp.min,
-            temp_max: res.daily[i].temp.max
-          }
+  //         let weatherInfo = {
+  //           date: new Date((res.daily[i].dt) * 1000),
+  //           temp_min: res.daily[i].temp.min,
+  //           temp_max: res.daily[i].temp.max
+  //         }
 
-          setWeatherData(...weatherData, weatherInfo);
-
-          console.log(weatherData)
-        }
-      });
-  };
+  //         setWeatherData(...weatherData, weatherInfo);
+  //       }
+  //     });
+  // };
 
   const setCityInput = (event) => {
     setCity(event.target.value);
@@ -148,8 +152,8 @@ function App() {
         </section>
 
         <section className="week-section">
-          {weatherData.length > 0 && weatherData.map((item) => {
-            return <WeatherInfo date={item.date} temp_max={item.temp_max} temp_min={item.temp_min} />
+          {weatherData.length > 0 && weatherData.map((item, index) => {
+            return <WeatherInfo key={index} date={item.date} temp_max={item.temp_max} temp_min={item.temp_min} />
           })}
         </section>
       </section>
