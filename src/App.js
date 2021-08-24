@@ -45,7 +45,8 @@ function App() {
   const getHistoricalWeather = (lat, lon) => {
     const todayTimestamp = (+Date.now() / 1000).toFixed(0);
     const dayInSeconds = 24 * 60 * 60;
-    for (let i = 1; i <= 2; i++) {
+    const previousDays = 5;
+    for (let i = 1; i <= previousDays; i++) {
       let referenceDay = todayTimestamp - dayInSeconds * i;
 
       fetch(
@@ -58,16 +59,13 @@ function App() {
             return a.temp < b.temp ? -1 : a.temp < b.temp ? 1 : 0;
           });
 
-          console.log(getExtremesTemp)
-          console.log(res)
+          let weatherInfo = {
+            date: new Date(referenceDay * 1000),
+            temp_min: getExtremesTemp[0],
+            temp_max: getExtremesTemp[23]
+          }
 
-          // let weatherInfo = {
-          //   date: new Date(referenceDay * 1000),
-          //   temp_min: res.temp.min,
-          //   temp_max: res.temp.max
-          // }
-
-          setWeatherData(...weatherData, res);
+          setWeatherData((weatherData) => [...weatherData, weatherInfo]);
         });
     }
   };
