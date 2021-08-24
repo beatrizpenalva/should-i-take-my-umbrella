@@ -6,74 +6,96 @@ function App() {
   const [city, setCity] = useState("");
   const [currentWeather, setCurrentWeather] = useState({});
   const [weatherData, setWeatherData] = useState([]);
-//informações sobre o sol (nascer e se por)
+  //informações sobre o sol (nascer e se por)
 
-  const getCurrentWeather = (e) => {
-    e.preventDefault();
+  const getCurrentWeather = (event) => {
+    event.preventDefault();
     fetch(
       `https://api.openweathermap.org/data/2.5/weather?q=${city.toLowerCase()}&units=metric&APPID=7c8b054ddd8f88293b1e0e10e75ba18d`
     )
       .then((response) => response.json())
       .then((res) => {
-
         const currentWeather = {
           description: res.weather[0].description,
           icon: res.weather[0].icon,
           temp: res.main.temp,
           temp_max: res.main.temp_max,
           temp_min: res.main.temp_min,
-
           humidity: res.main.humidity,
           pressure: res.main.pressure,
           wind: res.wind.speed,
-        }
+        };
 
-        setCurrentWeather(currentWeather)
-        getCordinates(city)
+        setCurrentWeather(currentWeather);
+        getCordinates(city);
       });
   };
 
   const getCordinates = (location) => {
-    fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${location}&appid=7c8b054ddd8f88293b1e0e10e75ba18d`)
-    .then((response) => response.json())
-    .then((res) => {
-      getForecastWeather(res[0].lat, res[0].lon)
-      getHistoricalWeather(res[0].lat, res[0].lon)
-    })
-  }
-
-  const getForecastWeather = (lat, lon) => {
-    fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=7c8b054ddd8f88293b1e0e10e75ba18d`)
-    .then((response) => response.json())
-    .then((res) => {
-      for (let i = 0; i <=7; i++) {
-        setWeatherData(...weatherData, res.daily[i])
-        // console.log(new Date((res.daily[i].dt) * 1000)) // data
-      }
-    })
-  }
+    fetch(
+      `http://api.openweathermap.org/geo/1.0/direct?q=${location}&appid=7c8b054ddd8f88293b1e0e10e75ba18d`
+    )
+      .then((response) => response.json())
+      .then((res) => {
+        getForecastWeather(res[0].lat, res[0].lon);
+        getHistoricalWeather(res[0].lat, res[0].lon);
+      });
+  };
 
   const getHistoricalWeather = (lat, lon) => {
-    const todayTimestamp = (+Date.now() / 1000).toFixed(0)
-    const dayInSeconds = 24 * 60 * 60
-    for (let i = 1; i <= 5; i++) {
-      let referenceDay = todayTimestamp - dayInSeconds * i 
-      
-      //console.log(new Date(referenceDay * 1000)) //data
+    const todayTimestamp = (+Date.now() / 1000).toFixed(0);
+    const dayInSeconds = 24 * 60 * 60;
+    for (let i = 1; i <= 2; i++) {
+      let referenceDay = todayTimestamp - dayInSeconds * i;
 
-      fetch(`https://api.openweathermap.org/data/2.5/onecall/timemachine?lat=${lat}&lon=${lon}&dt=${referenceDay}&appid=7c8b054ddd8f88293b1e0e10e75ba18d`)
+      fetch(
+        `https://api.openweathermap.org/data/2.5/onecall/timemachine?lat=${lat}&lon=${lon}&dt=${referenceDay}&appid=7c8b054ddd8f88293b1e0e10e75ba18d`
+      )
         .then((response) => response.json())
         .then((res) => {
-          setWeatherData(...weatherData, res)
-        })
-    }    
-  }
-  
+          
+          const getExtremesTemp = res.hourly.sort(function (a, b) {
+            return a.temp < b.temp ? -1 : a.temp < b.temp ? 1 : 0;
+          });
+
+          console.log(getExtremesTemp)
+          console.log(res)
+
+          // let weatherInfo = {
+          //   date: new Date(referenceDay * 1000),
+          //   temp_min: res.temp.min,
+          //   temp_max: res.temp.max
+          // }
+
+          setWeatherData(...weatherData, res);
+        });
+    }
+  };
+
+  const getForecastWeather = (lat, lon) => {
+    fetch(
+      `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=7c8b054ddd8f88293b1e0e10e75ba18d`
+    )
+      .then((response) => response.json())
+      .then((res) => {
+        for (let i = 0; i <= 7; i++) {
+
+          let weatherInfo = {
+            date: new Date((res.daily[i].dt) * 1000),
+            temp_min: res.daily[i].temp.min,
+            temp_max: res.daily[i].temp.max
+          }
+
+          setWeatherData(...weatherData, weatherInfo);
+
+          console.log(weatherData)
+        }
+      });
+  };
+
   const setCityInput = (event) => {
     setCity(event.target.value);
   };
-
-  console.log(weatherData)
 
   return (
     <>
@@ -112,25 +134,25 @@ function App() {
             More info<i className="fas fa-chevron-down"></i>
           </button>
           <section className="details-section">
-            <WeatherDetails contents={"Humidity"} info={currentWeather.humidity + "%"}/>
-            <WeatherDetails contents={"Pressure"} info={currentWeather.pressure + "hPa"}/>
-            <WeatherDetails contents={"Wind"} info={currentWeather.wind + "m/s"}/>
+            <WeatherDetails
+              contents={"Humidity"}
+              info={currentWeather.humidity + "%"}
+            />
+            <WeatherDetails
+              contents={"Pressure"}
+              info={currentWeather.pressure + "hPa"}
+            />
+            <WeatherDetails
+              contents={"Wind"}
+              info={currentWeather.wind + "m/s"}
+            />
           </section>
         </section>
 
         <section className="week-section">
-          <WeatherInfo />
-          <WeatherInfo />
-          <WeatherInfo />
-          <WeatherInfo />
-          <WeatherInfo />
-          <WeatherInfo />
-          <WeatherInfo />
-          <WeatherInfo />
-          <WeatherInfo />
-          <WeatherInfo />
-          <WeatherInfo />
-          <WeatherInfo />
+          {weatherData.length > 0 && weatherData.map((item) => {
+            return <WeatherInfo date={item.date} temp_max={item.temp_max} temp_min={item.temp_min} />
+          })}
         </section>
       </section>
     </>
