@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-// import WeatherInfo from "./components/WeatherInfo/index";
+//import WeatherInfo from "./components/WeatherInfo/index";
 import WeatherDetails from "./components/WeatherDetails/index";
 
 function App() {
@@ -61,7 +61,7 @@ function App() {
           });
 
           const weatherInfo = {
-            date: new Date(referenceDay * 1000),
+            date: (new Date(referenceDay * 1000)).toString(),
             temp_min: sortHourTemp[0].temp,
             temp_max: sortHourTemp[23].temp
           }
@@ -80,7 +80,7 @@ function App() {
         for (let i = 0; i <= 7; i++) {
 
           let weatherInfo = {
-            date: new Date((res.daily[i].dt) * 1000),
+            date: (new Date((res.daily[i].dt) * 1000)).toString(),
             temp_min: res.daily[i].temp.min,
             temp_max: res.daily[i].temp.max
           }
@@ -96,7 +96,6 @@ function App() {
 
   return (
     <>
-    {weatherData.length}
       <form className="location-info" onSubmit={getCurrentWeather}>
         <label>
           What is your location?
@@ -147,11 +146,13 @@ function App() {
           </section>
         </section>
 
-        {/* <section className="week-section">
-          {weatherData.length > 0 && weatherData.map((item, index) => {
-            return <WeatherInfo key={index} date={item.date} temp_max={item.temp_max} temp_min={item.temp_min} />
-          })}
-        </section> */}
+        <section className="week-section">
+          {weatherData.length > 0 && weatherData.map((item) => {
+           return console.log(typeof (item.date))
+            //return <WeatherInfo key={index} date={item.date} temp_max={item.temp_max} temp_min={item.temp_min} />
+            })
+          }
+        </section>
       </section>
     </>
   );
