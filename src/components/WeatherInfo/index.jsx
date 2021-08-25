@@ -1,14 +1,14 @@
 import React from 'react';
 import "./style.css";
 
-const WeatherInfo = () => {
+const WeatherInfo = ({date, temp_max, temp_min}) => {
     return (
         <section className="week-info">
-            <h4>Fri</h4>
+            <h4>{date}</h4>
             <section className="temp-info">
                 <i className="fas fa-wind icon"></i>
-                <p>17º C</p>
-                <p className="temp-min">14º C</p>
+                <p>{Math.round(temp_max)} ºC</p>
+                <p className="temp-min">{Math.round(temp_min)} ºC</p>
             </section>
         </section>
     )
