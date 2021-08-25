@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-//import WeatherInfo from "./components/WeatherInfo/index";
+import WeatherInfo from "./components/WeatherInfo/index";
 import WeatherDetails from "./components/WeatherDetails/index";
 
 function App() {
@@ -147,9 +147,8 @@ function App() {
         </section>
 
         <section className="week-section">
-          {weatherData.length > 0 && weatherData.map((item) => {
-           return console.log(typeof (item.date))
-            //return <WeatherInfo key={index} date={item.date} temp_max={item.temp_max} temp_min={item.temp_min} />
+          {weatherData.length > 0 && weatherData.map((item, index) => {
+            return <WeatherInfo key={index} date={item.date.slice(0,3)} temp_max={item.temp_max} temp_min={item.temp_min} />
             })
           }
         </section>
