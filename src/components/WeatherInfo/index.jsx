@@ -7,8 +7,8 @@ const WeatherInfo = ({date, temp_max, temp_min}) => {
             <h4>{date}</h4>
             <section className="temp-info">
                 <i className="fas fa-wind icon"></i>
-                <p>{temp_max}</p>
-                <p className="temp-min">{temp_min}</p>
+                <p>{Math.round(temp_max)} ºC</p>
+                <p className="temp-min">{Math.round(temp_min)} ºC</p>
             </section>
         </section>
     )

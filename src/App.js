@@ -51,7 +51,7 @@ function App() {
       let referenceDay = todayTimestamp - dayInSeconds * i;
 
       fetch(
-        `https://api.openweathermap.org/data/2.5/onecall/timemachine?lat=${lat}&lon=${lon}&dt=${referenceDay}&appid=7c8b054ddd8f88293b1e0e10e75ba18d`
+        `https://api.openweathermap.org/data/2.5/onecall/timemachine?lat=${lat}&lon=${lon}&dt=${referenceDay}&units=metric&appid=7c8b054ddd8f88293b1e0e10e75ba18d`
       )
         .then((response) => response.json())
         .then((res) => {
@@ -73,7 +73,7 @@ function App() {
 
   const getForecastWeather = (lat, lon) => {
     fetch(
-      `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=7c8b054ddd8f88293b1e0e10e75ba18d`
+      `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&units=metric&appid=7c8b054ddd8f88293b1e0e10e75ba18d`
     )
       .then((response) => response.json())
       .then((res) => {
