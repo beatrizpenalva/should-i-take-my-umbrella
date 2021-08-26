@@ -72,12 +72,13 @@ button {
 }
 
 .details-section {
-  display: none;
+  display: flex;
+  visibility: hidden;
+  margin: 1.25rem 0 0;
 }
 
 .details-section.display {
-  display: flex;
-  margin: 1.25rem 0 0;
+  visibility: visible;
 }
 
 .toggle-button, .fa-chevron-down {
