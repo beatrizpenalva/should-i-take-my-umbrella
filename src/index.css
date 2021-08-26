@@ -19,6 +19,13 @@ h3 {
   font-size: 2rem;
 }
 
+button {
+  background: none;
+  outline: none;
+  border: none;
+}
+
+
 .location-info {
   display: flex;
   flex-wrap: wrap;
@@ -65,18 +72,24 @@ h3 {
 }
 
 .details-section {
+  display: none;
+}
+
+.details-section.display {
   display: flex;
   margin: 1.25rem 0 0;
 }
 
-.toggle-button {
+.toggle-button, .fa-chevron-down {
   font-size: 1.75rem;
   font-weight: 600;
   color: #312915;
-  background: none;
-  outline: none;
-  border: none;
-  margin-top: 2rem;
+  margin: 2rem .25rem 0;
+  transition: 0.5s ease-in-out;
+}
+
+.fa-chevron-down.display {
+  transform: rotate(180deg);
 }
 
 .week-section {

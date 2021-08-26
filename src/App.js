@@ -6,6 +6,7 @@ function App() {
   const [city, setCity] = useState("");
   const [currentWeather, setCurrentWeather] = useState({});
   const [weatherData, setWeatherData] = useState([]);
+  const [show, setShow] = useState(false);
   //informações sobre o sol (nascer e se por)
 
   const getCurrentWeather = (event) => {
@@ -90,6 +91,31 @@ function App() {
       });
   };
 
+  const handleToggle = () => {
+    if(show) setShow(false)
+    else setShow(true)
+
+    toggleButton();
+  }
+
+  const toggleButton = () => {
+    const getToggleContainer = document.querySelector(".details-section")
+    const getButton = document.querySelector(".toggle-button");
+    const getArrow = document.querySelector(".fa-chevron-down")
+
+    if (show) {
+      getToggleContainer.classList.add("display");
+      getArrow.classList.add("display");
+      getButton.innerText = "Less Info"
+    }  
+
+    else {
+      getToggleContainer.classList.remove("display");
+      getArrow.classList.remove("display");
+      getButton.innerText = "More Info"
+    }
+  }
+
   const setCityInput = (event) => {
     setCity(event.target.value);
   };
@@ -115,6 +141,7 @@ function App() {
 
         <section className="info-container">
           <h1>{Math.round(currentWeather.temp)} ºC</h1>
+
           <section className="tempeture-info">
             <section>
               <p>min</p>
@@ -127,18 +154,22 @@ function App() {
             </section>
           </section>
 
-          <button className="toggle-button">
-            More info<i className="fas fa-chevron-down"></i>
+          <button onClick={handleToggle}>
+            <span className="toggle-button"> More info</span>
+            <i className="fas fa-chevron-down"></i>
           </button>
+
           <section className="details-section">
             <WeatherDetails
               contents={"Humidity"}
               info={currentWeather.humidity + "%"}
             />
+
             <WeatherDetails
               contents={"Pressure"}
               info={currentWeather.pressure + "hPa"}
             />
+
             <WeatherDetails
               contents={"Wind"}
               info={currentWeather.wind + "m/s"}
@@ -148,7 +179,11 @@ function App() {
 
         <section className="week-section">
           {weatherData.length > 0 && weatherData.map((item, index) => {
-            return <WeatherInfo key={index} date={item.date.slice(0,3)} temp_max={item.temp_max} temp_min={item.temp_min} />
+            return <WeatherInfo 
+              key={index} 
+              date={item.date.slice(0,3)} 
+              temp_max={item.temp_max} 
+              temp_min={item.temp_min} />
             })
           }
         </section>
