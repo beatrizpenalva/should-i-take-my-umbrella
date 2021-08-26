@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import WeatherInfo from "./components/WeatherInfo/index";
 import WeatherDetails from "./components/WeatherDetails/index";
+import WeatherIcon from "./components/WeatherIcon/WeatherIcon";
 
 function App() {
   const [city, setCity] = useState("");
@@ -135,7 +136,7 @@ function App() {
 
       <section className="container">
         <section className="resume">
-          <i className="fas fa-circle"></i>
+          <WeatherIcon weatherDescription={currentWeather.description}/>
           <h3>{currentWeather.description}</h3>
         </section>
 
