@@ -99,10 +99,6 @@ button {
   margin-top: 2.5rem;
 }
 
-.fa-circle {
-  font-size: 20rem;
-}
-
 @media (max-width: 415px) { 
   .fa-circle {
     font-size: 8rem;

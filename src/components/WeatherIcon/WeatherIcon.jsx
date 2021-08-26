@@ -1,18 +1,23 @@
 import React from "react";
-// import "./style.css";
+import "./index.css";
 
 const WeatherIcon = ({weatherDescription}) => {
-    if(weatherDescription.includes("clouds")) {
-        return (<i class="fas fa-cloud resume"></i>)
-    }
-    if (weatherDescription.includes("rain")) {
-        return (<i class="fas fa-cloud-showers-heavy resume"></i>)
-    }
-    if (weatherDescription.includes("snow")) {
-        return (<i class="fas fa-snowflake resume"></i>)
+    if(weatherDescription) {
+        if(weatherDescription.includes("clouds")) {
+            return (<i className="fas fa-cloud weather-icon"></i>)
+        }
+        if (weatherDescription.includes("rain")) {
+            return (<i className="fas fa-cloud-showers-heavy weather-icon"></i>)
+        }
+        if (weatherDescription.includes("snow")) {
+            return (<i className="fas fa-snowflake weather-icon"></i>)
+        }
+        else {
+            return(<i className="fas fa-circle weather-icon"></i>)
+        }
     }
     else {
-        return(<i className="fas fa-circle resume"></i>)
+        return(<i className="fas fa-circle weather-icon"></i>)
     }
 }
 
