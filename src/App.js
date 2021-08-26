@@ -12,6 +12,8 @@ function App() {
 
   const getCurrentWeather = (event) => {
     event.preventDefault();
+    document.querySelector(".week-section").innerHTML = ""
+    
     fetch(
       `https://api.openweathermap.org/data/2.5/weather?q=${city.toLowerCase()}&units=metric&APPID=7c8b054ddd8f88293b1e0e10e75ba18d`
     )
