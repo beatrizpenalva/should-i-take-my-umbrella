@@ -21,9 +21,10 @@
     line-height: 1.2rem;
 }
 
-.icon {
+.temp-info i{
     margin-bottom: 4px;
     font-size: 1.5rem;
+    color: var(--font-color);
 }
 
 .temp-min {

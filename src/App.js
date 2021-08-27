@@ -8,7 +8,6 @@ function App() {
   const [currentWeather, setCurrentWeather] = useState({});
   const [weatherData, setWeatherData] = useState([]);
   const [show, setShow] = useState(false);
-  //informações sobre o sol (nascer e se por)
 
   const getCurrentWeather = (event) => {
     event.preventDefault();
@@ -20,14 +19,17 @@ function App() {
       .then((response) => response.json())
       .then((res) => {
         const currentWeather = {
-          description: res.weather[0].description,
+          description: res.weather[0].description.toLowerCase(),
           temp: res.main.temp,
           temp_max: res.main.temp_max,
           temp_min: res.main.temp_min,
           humidity: res.main.humidity,
-          pressure: res.main.pressure,
           wind: res.wind.speed,
+          sunrise: ((new Date(res.sys.sunrise * 1000)).toString()).slice(16,21),
+          sunset: ((new Date(res.sys.sunset * 1000)).toString()).slice(16,21)
         };
+
+        console.log(currentWeather)
 
         setCurrentWeather(currentWeather);
         getCordinates(city);
@@ -68,7 +70,7 @@ function App() {
             date: (new Date(referenceDay * 1000)).toString(),
             temp_min: sortHourTemp[0].temp,
             temp_max: sortHourTemp[23].temp,
-            weatherDescription: res.current.weather[0].main
+            weatherDescription: res.current.weather[0].main.toLowerCase()
           }
 
           setWeatherData(prevState => ([...prevState, weatherInfo]))
@@ -83,12 +85,12 @@ function App() {
       .then((response) => response.json())
       .then((res) => {
         for (let i = 0; i <= 7; i++) {
-          
+
           let weatherInfo = {
             date: (new Date((res.daily[i].dt) * 1000)).toString(),
             temp_min: res.daily[i].temp.min,
             temp_max: res.daily[i].temp.max,
-            weatherDescription: res.current.weather[0].main
+            weatherDescription: res.current.weather[0].main.toLowerCase()
           }
 
           setWeatherData(prevState => ([...prevState, weatherInfo]))
@@ -197,13 +199,18 @@ function App() {
             />
 
             <WeatherDetails
-              contents={"Pressure"}
-              info={currentWeather.pressure + "hPa"}
+              contents={"Wind"}
+              info={currentWeather.wind + "m/s"}
             />
 
             <WeatherDetails
-              contents={"Wind"}
-              info={currentWeather.wind + "m/s"}
+              contents={"Sunrise"}
+              info={currentWeather.sunrise}
+            />
+
+            <WeatherDetails
+              contents={"Sunset"}
+              info={currentWeather.sunset}
             />
           </section>
         </section>

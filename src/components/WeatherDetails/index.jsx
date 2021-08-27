@@ -11,4 +11,11 @@ const WeatherDetails = ({contents, info}) => {
     )
 }
 
+/*
+    <i class="fas fa-tint"></i>
+    <i className="fas fa-wind icon"></i>
+    <i class="fas fa-sun"></i>
+    <i class="far fa-sun"></i>
+*/
+
 export default WeatherDetails;
