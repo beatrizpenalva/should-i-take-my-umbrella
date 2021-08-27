@@ -13,7 +13,7 @@ function App() {
   const getCurrentWeather = (event) => {
     event.preventDefault();
     document.querySelector(".week-section").innerHTML = ""
-    
+
     fetch(
       `https://api.openweathermap.org/data/2.5/weather?q=${city.toLowerCase()}&units=metric&APPID=7c8b054ddd8f88293b1e0e10e75ba18d`
     )
@@ -21,7 +21,6 @@ function App() {
       .then((res) => {
         const currentWeather = {
           description: res.weather[0].description,
-          icon: res.weather[0].icon,
           temp: res.main.temp,
           temp_max: res.main.temp_max,
           temp_min: res.main.temp_min,
@@ -32,6 +31,7 @@ function App() {
 
         setCurrentWeather(currentWeather);
         getCordinates(city);
+        applyColors(currentWeather.description)
       });
   };
 
@@ -122,6 +122,32 @@ function App() {
   const setCityInput = (event) => {
     setCity(event.target.value);
   };
+
+  const applyColors = (weatherDescription) => {
+    const root = document.documentElement;
+
+      root.style.setProperty("--bg-color", "#FCE19C");
+      root.style.setProperty("--font-color", "#312915");
+      root.style.setProperty("--icon-color", "#FFC122");
+
+    if(weatherDescription.includes("clouds")) {
+      root.style.setProperty("--bg-color", "#D4D9E0");
+      root.style.setProperty("--font-color", "#424242");
+      root.style.setProperty("--icon-color", "#F0F1F2");
+    }
+
+    if (weatherDescription.includes("rain")) {
+      root.style.setProperty("--bg-color", "#9CC2FC");
+      root.style.setProperty("--font-color", "#283A56");
+      root.style.setProperty("--icon-color", "#538FE9");
+    }
+    
+    if (weatherDescription.includes("snow")) {
+      root.style.setProperty("--bg-color", "#D4D9E0");
+      root.style.setProperty("--font-color", "424242");
+      root.style.setProperty("--icon-color", "#FFFFFF");
+    }
+  }
 
   return (
     <>
