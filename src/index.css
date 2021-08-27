@@ -5,9 +5,15 @@
   font-family: 'Nunito', sans-serif, normal, normal;
 }
 
+:root {
+  --font-color: black;
+  --bg-color: white;
+  --icon-color: black;
+}
+
 body {
-  background-color: #FCE19C;
-  color: #312915;
+  background-color: var(--bg-color);
+  color: var(--font-color);
   margin: 0 16px;
 }
 
@@ -17,6 +23,12 @@ h1 {
 
 h3 {
   font-size: 2rem;
+}
+
+button {
+  background: none;
+  outline: none;
+  border: none;
 }
 
 .location-info {
@@ -66,17 +78,24 @@ h3 {
 
 .details-section {
   display: flex;
+  visibility: hidden;
   margin: 1.25rem 0 0;
 }
 
-.toggle-button {
+.details-section.display {
+  visibility: visible;
+}
+
+.toggle-button, .fa-chevron-down {
   font-size: 1.75rem;
   font-weight: 600;
-  color: #312915;
-  background: none;
-  outline: none;
-  border: none;
-  margin-top: 2rem;
+  color: var(--font-color);
+  margin: 2rem .25rem 0;
+  transition: 0.5s ease-in-out;
+}
+
+.fa-chevron-down.display {
+  transform: rotate(180deg);
 }
 
 .week-section {
@@ -86,15 +105,7 @@ h3 {
   margin-top: 2.5rem;
 }
 
-.fa-circle {
-  font-size: 20rem;
-}
-
 @media (max-width: 415px) { 
-  .fa-circle {
-    font-size: 8rem;
-  }
-
   h1 {
     font-size: 3rem;
   }

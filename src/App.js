@@ -1,33 +1,39 @@
 import React, { useState } from "react";
 import WeatherInfo from "./components/WeatherInfo/index";
 import WeatherDetails from "./components/WeatherDetails/index";
+import WeatherIcon from "./components/WeatherIcon/WeatherIcon";
 
 function App() {
   const [city, setCity] = useState("");
   const [currentWeather, setCurrentWeather] = useState({});
   const [weatherData, setWeatherData] = useState([]);
-  //informações sobre o sol (nascer e se por)
+  const [show, setShow] = useState(false);
 
   const getCurrentWeather = (event) => {
     event.preventDefault();
+    document.querySelector(".week-section").innerHTML = ""
+
     fetch(
       `https://api.openweathermap.org/data/2.5/weather?q=${city.toLowerCase()}&units=metric&APPID=7c8b054ddd8f88293b1e0e10e75ba18d`
     )
       .then((response) => response.json())
       .then((res) => {
         const currentWeather = {
-          description: res.weather[0].description,
-          icon: res.weather[0].icon,
+          description: res.weather[0].description.toLowerCase(),
           temp: res.main.temp,
           temp_max: res.main.temp_max,
           temp_min: res.main.temp_min,
           humidity: res.main.humidity,
-          pressure: res.main.pressure,
           wind: res.wind.speed,
+          sunrise: ((new Date(res.sys.sunrise * 1000)).toString()).slice(16,21),
+          sunset: ((new Date(res.sys.sunset * 1000)).toString()).slice(16,21)
         };
+
+        console.log(currentWeather)
 
         setCurrentWeather(currentWeather);
         getCordinates(city);
+        applyColors(currentWeather.description)
       });
   };
 
@@ -63,7 +69,8 @@ function App() {
           const weatherInfo = {
             date: (new Date(referenceDay * 1000)).toString(),
             temp_min: sortHourTemp[0].temp,
-            temp_max: sortHourTemp[23].temp
+            temp_max: sortHourTemp[23].temp,
+            weatherDescription: res.current.weather[0].main.toLowerCase()
           }
 
           setWeatherData(prevState => ([...prevState, weatherInfo]))
@@ -82,7 +89,8 @@ function App() {
           let weatherInfo = {
             date: (new Date((res.daily[i].dt) * 1000)).toString(),
             temp_min: res.daily[i].temp.min,
-            temp_max: res.daily[i].temp.max
+            temp_max: res.daily[i].temp.max,
+            weatherDescription: res.current.weather[0].main.toLowerCase()
           }
 
           setWeatherData(prevState => ([...prevState, weatherInfo]))
@@ -90,9 +98,60 @@ function App() {
       });
   };
 
+  const handleToggle = () => {
+    if(show) setShow(false)
+    else setShow(true)
+
+    toggleButton();
+  }
+
+  const toggleButton = () => {
+    const getToggleContainer = document.querySelector(".details-section")
+    const getButton = document.querySelector(".toggle-button");
+    const getArrow = document.querySelector(".fa-chevron-down")
+
+    if (show) {
+      getToggleContainer.classList.add("display");
+      getArrow.classList.add("display");
+      getButton.innerText = "Less Info"
+    }  
+
+    else {
+      getToggleContainer.classList.remove("display");
+      getArrow.classList.remove("display");
+      getButton.innerText = "More Info"
+    }
+  }
+
   const setCityInput = (event) => {
     setCity(event.target.value);
   };
+
+  const applyColors = (weatherDescription) => {
+    const root = document.documentElement;
+
+      root.style.setProperty("--bg-color", "#FCE19C");
+      root.style.setProperty("--font-color", "#312915");
+      root.style.setProperty("--icon-color", "#FFC122");
+
+    if(weatherDescription.includes("clouds")) {
+      root.style.setProperty("--bg-color", "#D4D9E0");
+      root.style.setProperty("--font-color", "#424242");
+      root.style.setProperty("--icon-color", "#F0F1F2");
+    }
+
+    if (weatherDescription.includes("rain")) {
+      root.style.setProperty("--bg-color", "#9CC2FC");
+      root.style.setProperty("--font-color", "#283A56");
+      root.style.setProperty("--icon-color", "#538FE9");
+    }
+
+    if (weatherDescription.includes("snow")) {
+      root.style.setProperty("--bg-color", "#D4D9E0");
+      root.style.setProperty("--font-color", "424242");
+      root.style.setProperty("--icon-color", "#FFFFFF");
+    }
+  }
 
   return (
     <>
@@ -109,46 +168,61 @@ function App() {
 
       <section className="container">
         <section className="resume">
-          <i className="fas fa-circle"></i>
+          <WeatherIcon weatherDescription={currentWeather.description}/>
           <h3>{currentWeather.description}</h3>
         </section>
 
         <section className="info-container">
           <h1>{Math.round(currentWeather.temp)} ºC</h1>
+
           <section className="tempeture-info">
             <section>
               <p>min</p>
-              <h3>{Math.round(currentWeather.temp_min)} ºC</h3>
+              <h3>{Math.round(currentWeather.temp_min)}</h3>
             </section>
 
             <section>
               <p>max</p>
-              <h3>{Math.round(currentWeather.temp_max)} ºC</h3>
+              <h3>{Math.round(currentWeather.temp_max)}</h3>
             </section>
           </section>
 
-          <button className="toggle-button">
-            More info<i className="fas fa-chevron-down"></i>
+          <button onClick={handleToggle}>
+            <span className="toggle-button"> More info</span>
+            <i className="fas fa-chevron-down"></i>
           </button>
+
           <section className="details-section">
             <WeatherDetails
               contents={"Humidity"}
               info={currentWeather.humidity + "%"}
             />
-            <WeatherDetails
-              contents={"Pressure"}
-              info={currentWeather.pressure + "hPa"}
-            />
+
             <WeatherDetails
               contents={"Wind"}
               info={currentWeather.wind + "m/s"}
+            />
+
+            <WeatherDetails
+              contents={"Sunrise"}
+              info={currentWeather.sunrise}
+            />
+
+            <WeatherDetails
+              contents={"Sunset"}
+              info={currentWeather.sunset}
             />
           </section>
         </section>
 
         <section className="week-section">
           {weatherData.length > 0 && weatherData.map((item, index) => {
-            return <WeatherInfo key={index} date={item.date.slice(0,3)} temp_max={item.temp_max} temp_min={item.temp_min} />
+            return <WeatherInfo 
+              key={index}
+              date={item.date.slice(0,3)} 
+              temp_max={item.temp_max} 
+              temp_min={item.temp_min} 
+              weatherDescription={item.weatherDescription}/>
             })
           }
         </section>
