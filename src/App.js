@@ -67,7 +67,8 @@ function App() {
           const weatherInfo = {
             date: (new Date(referenceDay * 1000)).toString(),
             temp_min: sortHourTemp[0].temp,
-            temp_max: sortHourTemp[23].temp
+            temp_max: sortHourTemp[23].temp,
+            weatherDescription: res.current.weather[0].main
           }
 
           setWeatherData(prevState => ([...prevState, weatherInfo]))
@@ -82,11 +83,12 @@ function App() {
       .then((response) => response.json())
       .then((res) => {
         for (let i = 0; i <= 7; i++) {
-
+          
           let weatherInfo = {
             date: (new Date((res.daily[i].dt) * 1000)).toString(),
             temp_min: res.daily[i].temp.min,
-            temp_max: res.daily[i].temp.max
+            temp_max: res.daily[i].temp.max,
+            weatherDescription: res.current.weather[0].main
           }
 
           setWeatherData(prevState => ([...prevState, weatherInfo]))
@@ -141,7 +143,7 @@ function App() {
       root.style.setProperty("--font-color", "#283A56");
       root.style.setProperty("--icon-color", "#538FE9");
     }
-    
+
     if (weatherDescription.includes("snow")) {
       root.style.setProperty("--bg-color", "#D4D9E0");
       root.style.setProperty("--font-color", "424242");
@@ -174,12 +176,12 @@ function App() {
           <section className="tempeture-info">
             <section>
               <p>min</p>
-              <h3>{Math.round(currentWeather.temp_min)} ºC</h3>
+              <h3>{Math.round(currentWeather.temp_min)}</h3>
             </section>
 
             <section>
               <p>max</p>
-              <h3>{Math.round(currentWeather.temp_max)} ºC</h3>
+              <h3>{Math.round(currentWeather.temp_max)}</h3>
             </section>
           </section>
 
@@ -209,10 +211,11 @@ function App() {
         <section className="week-section">
           {weatherData.length > 0 && weatherData.map((item, index) => {
             return <WeatherInfo 
-              key={index} 
+              key={index}
               date={item.date.slice(0,3)} 
               temp_max={item.temp_max} 
-              temp_min={item.temp_min} />
+              temp_min={item.temp_min} 
+              weatherDescription={item.weatherDescription}/>
             })
           }
         </section>
