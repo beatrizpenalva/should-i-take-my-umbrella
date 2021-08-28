@@ -235,7 +235,7 @@ function App() {
   else {
     return (
       <main>
-            <section className="info-container">
+            <section className="home-container">
                 <h1>Should I take my umbrella?</h1>
 
                 <form className="location-info" onSubmit={handleSubmit}>
