@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { getCurrentWeather, getCordinates, getHistoricalWeather, getForecastWeather} from "./services/"
+import { getCurrentWeather, getCordinates, getHistoricalWeather, getForecastWeather} from "./services"
 import { Logo, WeatherDetails, WeatherIcon, WeatherInfo} from "./components/";
 
 function App() {
@@ -9,12 +9,15 @@ function App() {
   const [weatherData, setWeatherData] = useState([]);
   const [show, setShow] = useState(false);
 
+  const setCityInput = (event) => {
+    setCity(event.target.value);
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     setWeatherData([]);
 
     getCurrentWeather(city)  
-      .then((response) => response.json())
       .then((res) => {
         const currentWeather = {
           description: res.weather[0].description.toLowerCase(),
@@ -32,7 +35,6 @@ function App() {
       });
 
     getCordinates(city)
-      .then((response) => response.json())
       .then((res) => {
         const cordinatesInfo = {
           latitude: res[0].lat,
@@ -42,11 +44,11 @@ function App() {
         setCordinates(cordinatesInfo)
       });
 
-      changeName()
-      changeName2()
+      call();
+      calla();
   };
 
-  const changeName = () => {
+  const calla = () => {
     const todayTimestamp = (+Date.now() / 1000).toFixed(0);
     const dayInSeconds = 24 * 60 * 60;
     const previousDays = 5;
@@ -55,7 +57,6 @@ function App() {
       let referenceDay = todayTimestamp - dayInSeconds * i;
 
       getHistoricalWeather(cordinates, referenceDay)
-        .then((response) => response.json())
         .then((res) => {
           
           const sortHourTemp = res.hourly.sort(function (a, b) {
@@ -72,11 +73,10 @@ function App() {
           setWeatherData(prevState => ([...prevState, weatherInfo]))
         });
     }
-  };
+  }
 
-  const changeName2 = () => {
+  const call = () => {
     getForecastWeather(cordinates)
-      .then((response) => response.json())
       .then((res) => {
         for (let i = 0; i <= 7; i++) {
 
@@ -90,7 +90,32 @@ function App() {
           setWeatherData(prevState => ([...prevState, weatherInfo]))
         }
       });
-  };
+  }
+
+  const applyColors = (weatherDescription) => {
+    const root = document.documentElement;
+      root.style.setProperty("--bg-color", "#FCE19C");
+      root.style.setProperty("--font-color", "#312915");
+      root.style.setProperty("--icon-color", "#FFC122");
+
+    if(weatherDescription.includes("clouds")) {
+      root.style.setProperty("--bg-color", "#D4D9E0");
+      root.style.setProperty("--font-color", "#424242");
+      root.style.setProperty("--icon-color", "#F0F1F2");
+    }
+
+    if (weatherDescription.includes("rain")) {
+      root.style.setProperty("--bg-color", "#9CC2FC");
+      root.style.setProperty("--font-color", "#283A56");
+      root.style.setProperty("--icon-color", "#538FE9");
+    }
+
+    if (weatherDescription.includes("snow")) {
+      root.style.setProperty("--bg-color", "#D4D9E0");
+      root.style.setProperty("--font-color", "424242");
+      root.style.setProperty("--icon-color", "#FFFFFF");
+    }
+  }
 
   const handleToggle = () => {
     if(show) setShow(false)
@@ -114,36 +139,6 @@ function App() {
       getToggleContainer.classList.remove("display");
       getArrow.classList.remove("display");
       getButton.innerText = "More Info"
-    }
-  }
-
-  const setCityInput = (event) => {
-    setCity(event.target.value);
-  };
-
-  const applyColors = (weatherDescription) => {
-    const root = document.documentElement;
-
-      root.style.setProperty("--bg-color", "#FCE19C");
-      root.style.setProperty("--font-color", "#312915");
-      root.style.setProperty("--icon-color", "#FFC122");
-
-    if(weatherDescription.includes("clouds")) {
-      root.style.setProperty("--bg-color", "#D4D9E0");
-      root.style.setProperty("--font-color", "#424242");
-      root.style.setProperty("--icon-color", "#F0F1F2");
-    }
-
-    if (weatherDescription.includes("rain")) {
-      root.style.setProperty("--bg-color", "#9CC2FC");
-      root.style.setProperty("--font-color", "#283A56");
-      root.style.setProperty("--icon-color", "#538FE9");
-    }
-
-    if (weatherDescription.includes("snow")) {
-      root.style.setProperty("--bg-color", "#D4D9E0");
-      root.style.setProperty("--font-color", "424242");
-      root.style.setProperty("--icon-color", "#FFFFFF");
     }
   }
 
