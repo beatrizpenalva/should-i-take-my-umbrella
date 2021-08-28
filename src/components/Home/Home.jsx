@@ -3,16 +3,19 @@ import "./style.css";
 
 const WeatherInfo = () => {
     return (
-        <main className="home-container">
-            <h1>Should I take my umbrella?</h1>
-             <form className="location-info">
-                <label> What is your location?
-                <input
-                    type="text"
-                    placeholder="Example: Salvador, BR"
-                />
-                </label>
-            </form>
+        <main>
+            <section className="info-container">
+                <h1>Should I take my umbrella?</h1>
+
+                <form className="location-info">
+                    <label> What is your location?
+                    <input
+                        type="text"
+                        placeholder="Example: Salvador, BR"
+                    />
+                    </label>
+                </form>
+            </section>
 
             <section className="logo">
                 <div className="umbrella-1"></div>
