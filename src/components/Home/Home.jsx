@@ -3,7 +3,7 @@ import "./style.css";
 
 const WeatherInfo = () => {
     return (
-        <section className="home-container">
+        <main className="home-container">
             <h1>Should I take my umbrella?</h1>
              <form className="location-info">
                 <label> What is your location?
@@ -15,6 +15,8 @@ const WeatherInfo = () => {
             </form>
 
             <section className="logo">
+                <div className="umbrella-1"></div>
+
                 <div className="umbrella"></div>
                 
                 <div className="umbrella-bottom">
@@ -22,7 +24,7 @@ const WeatherInfo = () => {
                     <div className="umbrella-3"></div>
                 </div>
             </section>
-        </section>
+        </main>
     )
 }
 
