@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Home from "./components/Home/Home";
+// import Home from "./components/Home/Home";
 import WeatherInfo from "./components/WeatherInfo/index";
 import WeatherDetails from "./components/WeatherDetails/index";
 import WeatherIcon from "./components/WeatherIcon/WeatherIcon";
@@ -10,9 +10,9 @@ function App() {
   const [weatherData, setWeatherData] = useState([]);
   const [show, setShow] = useState(false);
 
-  const getCurrentWeather = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    document.querySelector(".week-section").innerHTML = ""
+    setWeatherData([]);
 
     fetch(
       `https://api.openweathermap.org/data/2.5/weather?q=${city.toLowerCase()}&units=metric&APPID=7c8b054ddd8f88293b1e0e10e75ba18d`
@@ -152,19 +152,16 @@ function App() {
     }
   }
 
-  if (!city) {
-    return <Home />
-  }
-
-  else {
+  if(weatherData.length > 0) {
     return (
       <>
-        <form className="location-info" onSubmit={getCurrentWeather}>
+        <form className="location-info" onSubmit={handleSubmit}>
           <label>
             What is your location?
             <input
               type="text"
               placeholder="Example: Salvador, BR"
+              value={city}
               onChange={setCityInput}
             />
           </label>
@@ -233,6 +230,37 @@ function App() {
         </section>
       </>
     );
+  }
+
+  else {
+    return (
+      <main>
+            <section className="info-container">
+                <h1>Should I take my umbrella?</h1>
+
+                <form className="location-info" onSubmit={handleSubmit}>
+                    <label> What is your location?
+                    <input
+                        type="text"
+                        placeholder="Example: Salvador, BR"
+                        onChange={setCityInput}
+                    />
+                    </label>
+                </form>
+            </section>
+
+            <section className="logo">
+                <div className="umbrella-1"></div>
+
+                <div className="umbrella"></div>
+                
+                <div className="umbrella-bottom">
+                    <div className="umbrella-2"></div>
+                    <div className="umbrella-3"></div>
+                </div>
+            </section>
+        </main>
+    )
   }
 }
 
