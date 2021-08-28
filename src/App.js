@@ -42,7 +42,6 @@ function App() {
     )
       .then((response) => response.json())
       .then((res) => {
-        getForecastWeather(res[0].lat, res[0].lon);
         getHistoricalWeather(res[0].lat, res[0].lon);
       });
   };
@@ -75,6 +74,8 @@ function App() {
           setWeatherData(prevState => ([...prevState, weatherInfo]))
         });
     }
+
+    getForecastWeather(lat, lon);
   };
 
   const getForecastWeather = (lat, lon) => {
