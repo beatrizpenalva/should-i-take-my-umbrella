@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { getCurrentWeather, getCordinates, getHistoricalWeather, getForecastWeather} from "./services/index"
 import Logo from "./components/Logo/index";
 import WeatherInfo from "./components/WeatherInfo/index";
 import WeatherDetails from "./components/WeatherDetails/index";
@@ -6,6 +7,7 @@ import WeatherIcon from "./components/WeatherIcon/WeatherIcon";
 
 function App() {
   const [city, setCity] = useState("");
+  const [cordinates, setCordinates] = useState({});
   const [currentWeather, setCurrentWeather] = useState({});
   const [weatherData, setWeatherData] = useState([]);
   const [show, setShow] = useState(false);
@@ -14,9 +16,7 @@ function App() {
     event.preventDefault();
     setWeatherData([]);
 
-    fetch(
-      `https://api.openweathermap.org/data/2.5/weather?q=${city.toLowerCase()}&units=metric&APPID=7c8b054ddd8f88293b1e0e10e75ba18d`
-    )
+    getCurrentWeather(city)  
       .then((response) => response.json())
       .then((res) => {
         const currentWeather = {
@@ -31,22 +31,25 @@ function App() {
         };
 
         setCurrentWeather(currentWeather);
-        getCordinates(city);
         applyColors(currentWeather.description)
       });
-  };
 
-  const getCordinates = (location) => {
-    fetch(
-      `http://api.openweathermap.org/geo/1.0/direct?q=${location}&appid=7c8b054ddd8f88293b1e0e10e75ba18d`
-    )
+    getCordinates(city)
       .then((response) => response.json())
       .then((res) => {
-        getHistoricalWeather(res[0].lat, res[0].lon);
+        const cordinatesInfo = {
+          latitude: res[0].lat,
+          longitude:res[0].lon
+        }
+
+        setCordinates(cordinatesInfo)
       });
+
+      changeName()
+      changeName2()
   };
 
-  const getHistoricalWeather = (lat, lon) => {
+  const changeName = () => {
     const todayTimestamp = (+Date.now() / 1000).toFixed(0);
     const dayInSeconds = 24 * 60 * 60;
     const previousDays = 5;
@@ -54,9 +57,7 @@ function App() {
     for (let i = 1; i <= previousDays; i++) {
       let referenceDay = todayTimestamp - dayInSeconds * i;
 
-      fetch(
-        `https://api.openweathermap.org/data/2.5/onecall/timemachine?lat=${lat}&lon=${lon}&dt=${referenceDay}&units=metric&appid=7c8b054ddd8f88293b1e0e10e75ba18d`
-      )
+      getHistoricalWeather(cordinates, referenceDay)
         .then((response) => response.json())
         .then((res) => {
           
@@ -74,14 +75,10 @@ function App() {
           setWeatherData(prevState => ([...prevState, weatherInfo]))
         });
     }
-
-    getForecastWeather(lat, lon);
   };
 
-  const getForecastWeather = (lat, lon) => {
-    fetch(
-      `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&units=metric&appid=7c8b054ddd8f88293b1e0e10e75ba18d`
-    )
+  const changeName2 = () => {
+    getForecastWeather(cordinates)
       .then((response) => response.json())
       .then((res) => {
         for (let i = 0; i <= 7; i++) {
