@@ -1,9 +1,6 @@
 import React, { useState } from "react";
-import { getCurrentWeather, getCordinates, getHistoricalWeather, getForecastWeather} from "./services/index"
-import Logo from "./components/Logo/index";
-import WeatherInfo from "./components/WeatherInfo/index";
-import WeatherDetails from "./components/WeatherDetails/index";
-import WeatherIcon from "./components/WeatherIcon/WeatherIcon";
+import { getCurrentWeather, getCordinates, getHistoricalWeather, getForecastWeather} from "./services/"
+import { Logo, WeatherDetails, WeatherIcon, WeatherInfo} from "./components/";
 
 function App() {
   const [city, setCity] = useState("");
