@@ -6,15 +6,22 @@
 }
 
 :root {
-  --font-color: black;
-  --bg-color: white;
-  --icon-color: black;
+  --font-color: #424242;
+  --bg-color: #F8A797;
+  --icon-color: #424242;
 }
 
 body {
   background-color: var(--bg-color);
   color: var(--font-color);
-  margin: 0 16px;
+}
+
+main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  height: 100vh;
 }
 
 h1 {
@@ -29,6 +36,14 @@ button {
   background: none;
   outline: none;
   border: none;
+  cursor: pointer;
+}
+
+.home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 60%;
 }
 
 .location-info {
@@ -40,7 +55,7 @@ button {
 }
 
 .location-info input {
-  margin-left: 8px;
+  margin-left: 0.5rem;
   background-color: transparent;
   border: transparent;
   outline: transparent;
@@ -116,5 +131,20 @@ button {
 
   .toggle-button {
     font-size: 1.25rem;
+  }
+
+  .week-section {
+    width: 300px;
+    height: 100px;
+  }
+
+  .week-info {
+    display: none;
+    width: 100%;
+    height: 100%;
+  }
+
+  .week-info:target {
+    display: block;
   }
 }

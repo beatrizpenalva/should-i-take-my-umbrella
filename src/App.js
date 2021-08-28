@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Logo from "./components/Logo/index";
 import WeatherInfo from "./components/WeatherInfo/index";
 import WeatherDetails from "./components/WeatherDetails/index";
 import WeatherIcon from "./components/WeatherIcon/WeatherIcon";
@@ -9,9 +10,9 @@ function App() {
   const [weatherData, setWeatherData] = useState([]);
   const [show, setShow] = useState(false);
 
-  const getCurrentWeather = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    document.querySelector(".week-section").innerHTML = ""
+    setWeatherData([]);
 
     fetch(
       `https://api.openweathermap.org/data/2.5/weather?q=${city.toLowerCase()}&units=metric&APPID=7c8b054ddd8f88293b1e0e10e75ba18d`
@@ -29,8 +30,6 @@ function App() {
           sunset: ((new Date(res.sys.sunset * 1000)).toString()).slice(16,21)
         };
 
-        console.log(currentWeather)
-
         setCurrentWeather(currentWeather);
         getCordinates(city);
         applyColors(currentWeather.description)
@@ -43,7 +42,6 @@ function App() {
     )
       .then((response) => response.json())
       .then((res) => {
-        getForecastWeather(res[0].lat, res[0].lon);
         getHistoricalWeather(res[0].lat, res[0].lon);
       });
   };
@@ -76,6 +74,8 @@ function App() {
           setWeatherData(prevState => ([...prevState, weatherInfo]))
         });
     }
+
+    getForecastWeather(lat, lon);
   };
 
   const getForecastWeather = (lat, lon) => {
@@ -153,82 +153,107 @@ function App() {
     }
   }
 
-  return (
-    <>
-      <form className="location-info" onSubmit={getCurrentWeather}>
-        <label>
-          What is your location?
-          <input
-            type="text"
-            placeholder="Example: Salvador, BR"
-            onChange={setCityInput}
-          />
-        </label>
-      </form>
+  if(weatherData.length > 0) {
+    return (
+      <>
+        <form className="location-info" onSubmit={handleSubmit}>
+          <label>
+            What is your location?
+            <input
+              type="text"
+              placeholder="Example: Salvador, BR"
+              value={city}
+              onChange={setCityInput}
+            />
+          </label>
+        </form>
 
-      <section className="container">
-        <section className="resume">
-          <WeatherIcon weatherDescription={currentWeather.description}/>
-          <h3>{currentWeather.description}</h3>
-        </section>
+        <section className="container">
+          <section className="resume">
+            <WeatherIcon weatherDescription={currentWeather.description}/>
+            <h3>{currentWeather.description}</h3>
+          </section>
 
-        <section className="info-container">
-          <h1>{Math.round(currentWeather.temp)} ºC</h1>
+          <section className="info-container">
+            <h1>{Math.round(currentWeather.temp)} ºC</h1>
 
-          <section className="tempeture-info">
-            <section>
-              <p>min</p>
-              <h3>{Math.round(currentWeather.temp_min)}</h3>
+            <section className="tempeture-info">
+              <section>
+                <p>min</p>
+                <h3>{Math.round(currentWeather.temp_min)}</h3>
+              </section>
+
+              <section>
+                <p>max</p>
+                <h3>{Math.round(currentWeather.temp_max)}</h3>
+              </section>
             </section>
 
-            <section>
-              <p>max</p>
-              <h3>{Math.round(currentWeather.temp_max)}</h3>
+            <button onClick={handleToggle}>
+              <span className="toggle-button"> More info</span>
+              <i className="fas fa-chevron-down"></i>
+            </button>
+
+            <section className="details-section">
+              <WeatherDetails
+                contents={"Humidity"}
+                info={currentWeather.humidity + "%"}
+              />
+
+              <WeatherDetails
+                contents={"Wind"}
+                info={currentWeather.wind + "m/s"}
+              />
+
+              <WeatherDetails
+                contents={"Sunrise"}
+                info={currentWeather.sunrise}
+              />
+
+              <WeatherDetails
+                contents={"Sunset"}
+                info={currentWeather.sunset}
+              />
             </section>
           </section>
 
-          <button onClick={handleToggle}>
-            <span className="toggle-button"> More info</span>
-            <i className="fas fa-chevron-down"></i>
-          </button>
-
-          <section className="details-section">
-            <WeatherDetails
-              contents={"Humidity"}
-              info={currentWeather.humidity + "%"}
-            />
-
-            <WeatherDetails
-              contents={"Wind"}
-              info={currentWeather.wind + "m/s"}
-            />
-
-            <WeatherDetails
-              contents={"Sunrise"}
-              info={currentWeather.sunrise}
-            />
-
-            <WeatherDetails
-              contents={"Sunset"}
-              info={currentWeather.sunset}
-            />
+          <section className="week-section">
+            {weatherData.length > 0 && weatherData.map((item, index) => {
+              return <WeatherInfo 
+                key={index}
+                date={item.date.slice(0,3)} 
+                temp_max={item.temp_max} 
+                temp_min={item.temp_min} 
+                weatherDescription={item.weatherDescription}/>
+              })
+            }
           </section>
         </section>
+      </>
+    );
+  }
 
-        <section className="week-section">
-          {weatherData.length > 0 && weatherData.map((item, index) => {
-            return <WeatherInfo 
-              key={index}
-              date={item.date.slice(0,3)} 
-              temp_max={item.temp_max} 
-              temp_min={item.temp_min} 
-              weatherDescription={item.weatherDescription}/>
-            })
-          }
-        </section>
-      </section>
-    </>
-  );
+  else {
+    return (
+      <main>
+            <section className="home-container">
+                <h1>Should I take my umbrella?</h1>
+
+                <form className="location-info" onSubmit={handleSubmit}>
+                    <label> What is your location?
+                    <input
+                        type="text"
+                        placeholder="Example: Salvador, BR"
+                        onChange={setCityInput}
+                    />
+                    </label>
+                </form>
+            </section>
+
+            <Logo />
+        </main>
+    )
+  }
 }
 
 export default App;
