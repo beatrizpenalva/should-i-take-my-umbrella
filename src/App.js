@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getCurrentWeather, getCordinates, getHistoricalWeather, getForecastWeather} from "./services"
 import { Logo, WeatherDetails, WeatherIcon, WeatherInfo} from "./components/";
 
 function App() {
   const [city, setCity] = useState("");
-  const [cordinates, setCordinates] = useState({});
   const [currentWeather, setCurrentWeather] = useState({});
   const [weatherData, setWeatherData] = useState([]);
   const [show, setShow] = useState(false);
@@ -41,14 +40,12 @@ function App() {
           longitude:res[0].lon
         }
 
-        setCordinates(cordinatesInfo)
+        calla(cordinatesInfo)
+        call(cordinatesInfo)
       });
-
-      call();
-      calla();
   };
 
-  const calla = () => {
+  const calla = (cordinates) => {
     const todayTimestamp = (+Date.now() / 1000).toFixed(0);
     const dayInSeconds = 24 * 60 * 60;
     const previousDays = 5;
@@ -58,7 +55,6 @@ function App() {
 
       getHistoricalWeather(cordinates, referenceDay)
         .then((res) => {
-          
           const sortHourTemp = res.hourly.sort(function (a, b) {
             return a.temp < b.temp ? -1 : a.temp < b.temp ? 1 : 0;
           });
@@ -75,7 +71,7 @@ function App() {
     }
   }
 
-  const call = () => {
+  const call = (cordinates) => {
     getForecastWeather(cordinates)
       .then((res) => {
         for (let i = 0; i <= 7; i++) {
