@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Home from "./components/Home/Home";
 import WeatherInfo from "./components/WeatherInfo/index";
 import WeatherDetails from "./components/WeatherDetails/index";
 import WeatherIcon from "./components/WeatherIcon/WeatherIcon";
@@ -28,8 +29,6 @@ function App() {
           sunrise: ((new Date(res.sys.sunrise * 1000)).toString()).slice(16,21),
           sunset: ((new Date(res.sys.sunset * 1000)).toString()).slice(16,21)
         };
-
-        console.log(currentWeather)
 
         setCurrentWeather(currentWeather);
         getCordinates(city);
@@ -153,82 +152,88 @@ function App() {
     }
   }
 
-  return (
-    <>
-      <form className="location-info" onSubmit={getCurrentWeather}>
-        <label>
-          What is your location?
-          <input
-            type="text"
-            placeholder="Example: Salvador, BR"
-            onChange={setCityInput}
-          />
-        </label>
-      </form>
+  if (!city) {
+    return <Home />
+  }
 
-      <section className="container">
-        <section className="resume">
-          <WeatherIcon weatherDescription={currentWeather.description}/>
-          <h3>{currentWeather.description}</h3>
-        </section>
+  else {
+    return (
+      <>
+        <form className="location-info" onSubmit={getCurrentWeather}>
+          <label>
+            What is your location?
+            <input
+              type="text"
+              placeholder="Example: Salvador, BR"
+              onChange={setCityInput}
+            />
+          </label>
+        </form>
 
-        <section className="info-container">
-          <h1>{Math.round(currentWeather.temp)} ºC</h1>
+        <section className="container">
+          <section className="resume">
+            <WeatherIcon weatherDescription={currentWeather.description}/>
+            <h3>{currentWeather.description}</h3>
+          </section>
 
-          <section className="tempeture-info">
-            <section>
-              <p>min</p>
-              <h3>{Math.round(currentWeather.temp_min)}</h3>
+          <section className="info-container">
+            <h1>{Math.round(currentWeather.temp)} ºC</h1>
+
+            <section className="tempeture-info">
+              <section>
+                <p>min</p>
+                <h3>{Math.round(currentWeather.temp_min)}</h3>
+              </section>
+
+              <section>
+                <p>max</p>
+                <h3>{Math.round(currentWeather.temp_max)}</h3>
+              </section>
             </section>
 
-            <section>
-              <p>max</p>
-              <h3>{Math.round(currentWeather.temp_max)}</h3>
+            <button onClick={handleToggle}>
+              <span className="toggle-button"> More info</span>
+              <i className="fas fa-chevron-down"></i>
+            </button>
+
+            <section className="details-section">
+              <WeatherDetails
+                contents={"Humidity"}
+                info={currentWeather.humidity + "%"}
+              />
+
+              <WeatherDetails
+                contents={"Wind"}
+                info={currentWeather.wind + "m/s"}
+              />
+
+              <WeatherDetails
+                contents={"Sunrise"}
+                info={currentWeather.sunrise}
+              />
+
+              <WeatherDetails
+                contents={"Sunset"}
+                info={currentWeather.sunset}
+              />
             </section>
           </section>
 
-          <button onClick={handleToggle}>
-            <span className="toggle-button"> More info</span>
-            <i className="fas fa-chevron-down"></i>
-          </button>
-
-          <section className="details-section">
-            <WeatherDetails
-              contents={"Humidity"}
-              info={currentWeather.humidity + "%"}
-            />
-
-            <WeatherDetails
-              contents={"Wind"}
-              info={currentWeather.wind + "m/s"}
-            />
-
-            <WeatherDetails
-              contents={"Sunrise"}
-              info={currentWeather.sunrise}
-            />
-
-            <WeatherDetails
-              contents={"Sunset"}
-              info={currentWeather.sunset}
-            />
+          <section className="week-section">
+            {weatherData.length > 0 && weatherData.map((item, index) => {
+              return <WeatherInfo 
+                key={index}
+                date={item.date.slice(0,3)} 
+                temp_max={item.temp_max} 
+                temp_min={item.temp_min} 
+                weatherDescription={item.weatherDescription}/>
+              })
+            }
           </section>
         </section>
-
-        <section className="week-section">
-          {weatherData.length > 0 && weatherData.map((item, index) => {
-            return <WeatherInfo 
-              key={index}
-              date={item.date.slice(0,3)} 
-              temp_max={item.temp_max} 
-              temp_min={item.temp_min} 
-              weatherDescription={item.weatherDescription}/>
-            })
-          }
-        </section>
-      </section>
-    </>
-  );
+      </>
+    );
+  }
 }
 
 export default App;
