@@ -22,7 +22,6 @@ const WeatherInfo = () => {
                     <div className="umbrella-3"></div>
                 </div>
             </section>
-
         </section>
     )
 }
