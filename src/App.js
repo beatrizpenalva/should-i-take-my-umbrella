@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-// import Home from "./components/Home/Home";
+import Logo from "./components/Logo/index";
 import WeatherInfo from "./components/WeatherInfo/index";
 import WeatherDetails from "./components/WeatherDetails/index";
 import WeatherIcon from "./components/WeatherIcon/WeatherIcon";
@@ -249,16 +249,7 @@ function App() {
                 </form>
             </section>
 
-            <section className="logo">
-                <div className="umbrella-1"></div>
-
-                <div className="umbrella"></div>
-                
-                <div className="umbrella-bottom">
-                    <div className="umbrella-2"></div>
-                    <div className="umbrella-3"></div>
-                </div>
-            </section>
+            <Logo />
         </main>
     )
   }

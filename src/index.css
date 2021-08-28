@@ -6,15 +6,14 @@
 }
 
 :root {
-  --font-color: black;
-  --bg-color: white;
-  --icon-color: black;
+  --font-color: #424242;
+  --bg-color: #F8A797;
+  --icon-color: #424242;
 }
 
 body {
   background-color: var(--bg-color);
   color: var(--font-color);
-  margin: 0 16px;
 }
 
 h1 {
@@ -40,7 +39,7 @@ button {
 }
 
 .location-info input {
-  margin-left: 8px;
+  margin-left: 0.5rem;
   background-color: transparent;
   border: transparent;
   outline: transparent;
@@ -103,6 +102,21 @@ button {
   flex-wrap: wrap;
   justify-content: center;
   margin-top: 2.5rem;
+}
+
+main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    height: 100vh;
+}
+
+.info-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 60%;
 }
 
 @media (max-width: 415px) { 

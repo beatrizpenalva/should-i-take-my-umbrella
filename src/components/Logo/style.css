@@ -1,23 +1,3 @@
-body {
-    background-color: #F8A797;
-}
-
-main {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    height: 100vh;
-    color: #424242;
-}
-
-.info-container {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    width: 60%;
-}
-
 .logo {
     display: flex;
     flex-direction: column;
@@ -55,7 +35,3 @@ main {
     border-bottom-left-radius: 5rem;
     border-bottom-right-radius: 5rem; 
 }
-
-/* @media (max-width: 415px) { 
-
-} */
