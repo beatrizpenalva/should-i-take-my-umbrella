@@ -15,7 +15,7 @@ function App() {
 
   function setCityInput(event) {
     setCity(event.target.value);
-  };
+  }
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -47,7 +47,7 @@ function App() {
       callHistoricalAPI(cordinatesInfo);
       callForecastAPI(cordinatesInfo);
     });
-  };
+  }
 
   function callHistoricalAPI(cordinatesInfo) {
     const cordinates = cordinatesInfo;
@@ -66,7 +66,7 @@ function App() {
 
         const referenceDay = getReferenceDay(index + 1);
         return {
-          date: (new Date(referenceDay * 1000).toString()).slice(0, 3),
+          date: new Date(referenceDay * 1000).toString().slice(0, 3),
           timestamp: referenceDay * 1000,
           temp_min: sortHourTemp[0].temp,
           temp_max: sortHourTemp[23].temp,
@@ -76,7 +76,33 @@ function App() {
 
       setWeatherData((prevState) => [...prevState, ...weatherInfoArray]);
     });
-  };
+  }
+
+  function callForecastAPI(cordinatesInfo) {
+    const cordinates = cordinatesInfo;
+    const dayInMiliseconds = 24 * 60 * 60 * 1000;
+    const promises = [];
+
+    for (let i = 0; i <= 6; i++) {
+      promises.push(handleMultipleRequestsForecast(cordinates)); // aqui voce pode usar o getForecastWeather diretamente
+    }
+
+    Promise.all(promises).then((values) => {
+      const weatherInfoArray = values.map((res, index) => {
+        const getTimestamp = +Date.now() + dayInMiliseconds * (index + 1);
+
+        return {
+          date: isToday(res, index),
+          timestamp: getTimestamp,
+          temp_min: res.daily[index].temp.min,
+          temp_max: res.daily[index].temp.max,
+          weatherDescription: res.current.weather[0].main.toLowerCase(),
+        };
+      });
+
+      setWeatherData((prevState) => [...prevState, ...weatherInfoArray]);
+    });
+  }
 
   function handleMultipleRequestsHistorical(i, cordinates) {
     const referenceDay = getReferenceDay(i);
@@ -89,37 +115,9 @@ function App() {
     return todayTimestamp - dayInSeconds * i;
   }
 
-  function callForecastAPI(cordinatesInfo) {
-    const cordinates = cordinatesInfo;
-    const dayInMiliseconds = 24 * 60 * 60 * 1000;
-    const promises = [];
-
-    for (let i = 0; i <= 6; i++) {
-      promises.push(handleMultipleRequestsForecast(cordinates));
-    }
-
-    Promise.all(promises).then((values) => {
-      const weatherInfoArray = values.map((res, index) => {
-        const getTimestamp = (+Date.now() + (dayInMiliseconds * (index + 1)))
-  
-        return {
-          date: isToday(res, index),
-          timestamp: getTimestamp,
-          temp_min: res.daily[index].temp.min,
-          temp_max: res.daily[index].temp.max,
-          weatherDescription: res.current.weather[0].main.toLowerCase(),
-        };
-      });
-
-      setWeatherData((prevState) => [...prevState, ...weatherInfoArray]);
-    });
-  };
-
   function isToday(res, index) {
-    if(index === 0) return "Today" 
-    else { 
-      return (new Date(res.daily[index].dt * 1000)).toString().slice(0, 3) 
-    }
+    if (!index) return "Today";
+    else return new Date(res.daily[index].dt * 1000).toString().slice(0, 3);
   }
 
   function handleMultipleRequestsForecast(cordinates) {
@@ -127,6 +125,8 @@ function App() {
   }
 
   function applyColors(weatherDescription) {
+    // aqui voce pode remover toda essa logia do comp, e colocar essa função em outro arquivo, onde so retorna a classe que voce quer
+    // ai no <main> voce colocria a classe correta
     const root = document.documentElement;
     root.style.setProperty("--bg-color", "#FCE19C");
     root.style.setProperty("--font-color", "#312915");
@@ -149,38 +149,15 @@ function App() {
       root.style.setProperty("--font-color", "424242");
       root.style.setProperty("--icon-color", "#FFFFFF");
     }
-  };
-
-  function handleToggle() {
-    if (show) setShow(false);
-    else setShow(true);
-
-    toggleButton();
-  };
-
-  function toggleButton() {
-    const getToggleContainer = document.querySelector(".details-section");
-    const getButton = document.querySelector(".toggle-button");
-    const getArrow = document.querySelector(".fa-chevron-down");
-
-    if (show) {
-      getToggleContainer.classList.add("display");
-      getArrow.classList.add("display");
-      getButton.innerText = "Less Info";
-    } else {
-      getToggleContainer.classList.remove("display");
-      getArrow.classList.remove("display");
-      getButton.innerText = "More Info";
-    }
-  };
+  }
 
   const orderWeekInfo = () => {
-    const sortArr = weatherData.sort(function (a,b) {
+    const sortArr = weatherData.sort(function (a, b) {
       return a.timestamp < b.timestamp ? -1 : a.timestamp < b.timestamp ? 1 : 0;
-    })
+    });
 
-    return sortArr
-  }
+    return sortArr;
+  };
 
   if (weatherData.length > 0) {
     return (
@@ -218,12 +195,23 @@ function App() {
               </section>
             </section>
 
-            <button onClick={handleToggle}>
-              <span className="toggle-button"> More info</span>
-              <i className="fas fa-chevron-down"></i>
+            <button onClick={() => setShow(!show)}>
+              <span
+                className={show ? "toggle-button" : "toggle-button display"}
+              >
+                {" "}
+                {show ? "Less" : "More"} info
+              </span>
+              <i
+                className={
+                  show ? "fas fa-chevron-down" : "fas fa-chevron-down display"
+                }
+              ></i>
             </button>
 
-            <section className="details-section">
+            <section
+              className={show ? "details-section" : "details-section display"}
+            >
               <WeatherDetails
                 contents={"Humidity"}
                 info={currentWeather.humidity + "%"}
@@ -248,16 +236,16 @@ function App() {
 
           <section className="week-section">
             {orderWeekInfo().map((item, index) => {
-                return (
-                  <WeatherInfo
-                    key={index}
-                    date={item.date}
-                    temp_max={item.temp_max}
-                    temp_min={item.temp_min}
-                    weatherDescription={item.weatherDescription}
-                  />
-                );
-              })}
+              return (
+                <WeatherInfo
+                  key={index}
+                  date={item.date}
+                  temp_max={item.temp_max}
+                  temp_min={item.temp_min}
+                  weatherDescription={item.weatherDescription}
+                />
+              );
+            })}
           </section>
         </section>
       </>
