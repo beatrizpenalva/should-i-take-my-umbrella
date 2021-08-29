@@ -54,7 +54,7 @@ function App() {
     const promises = [];
 
     for (let i = 1; i <= previousDays; i++) {
-      promises.push(handleMultipleRequests(i, cordinates));
+      promises.push(handleMultipleRequestsHistorical(i, cordinates));
     }
 
     Promise.all(promises).then((values) => {
@@ -77,7 +77,7 @@ function App() {
     });
   };
 
-  function handleMultipleRequests(i, cordinates) {
+  function handleMultipleRequestsHistorical(i, cordinates) {
     const referenceDay = getReferenceDay(i);
     return getHistoricalWeather(cordinates, referenceDay);
   }
@@ -88,20 +88,31 @@ function App() {
     return todayTimestamp - dayInSeconds * i;
   }
 
-  const callForecastAPI = (cordinates) => {
-    getForecastWeather(cordinates).then((res) => {
-      for (let i = 0; i <= 7; i++) {
-        let weatherInfo = {
-          date: new Date(res.daily[i].dt * 1000).toString(),
-          temp_min: res.daily[i].temp.min,
-          temp_max: res.daily[i].temp.max,
+  const callForecastAPI = (cordinatesInfo) => {
+    const cordinates = cordinatesInfo;
+    const promises = [];
+
+    for (let i = 0; i <= 6; i++) {
+      promises.push(handleMultipleRequestsForecast(cordinates));
+    }
+
+    Promise.all(promises).then((values) => {
+      const weatherInfoArray = values.map((res, index) => {
+        return {
+          date: new Date(res.daily[index].dt * 1000).toString(),
+          temp_min: res.daily[index].temp.min,
+          temp_max: res.daily[index].temp.max,
           weatherDescription: res.current.weather[0].main.toLowerCase(),
         };
+      });
 
-        setWeatherData((prevState) => [...prevState, weatherInfo]);
-      }
+      setWeatherData(weatherInfoArray);
     });
   };
+
+  function handleMultipleRequestsForecast(cordinates) {
+    return getForecastWeather(cordinates);
+  }
 
   const applyColors = (weatherDescription) => {
     const root = document.documentElement;
@@ -232,8 +243,7 @@ function App() {
         </section>
       </>
     );
-  } 
-  else {
+  } else {
     return (
       <main>
         <section className="home-container">
