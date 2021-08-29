@@ -23,7 +23,6 @@ function App() {
 
     getCurrentWeather(city).then((res) => {
       const currentWeather = {
-        date: "Today",
         timeStamp: Date.now(),
         description: res.weather[0].description.toLowerCase(),
         temp: res.main.temp,
@@ -36,7 +35,6 @@ function App() {
       };
 
       setCurrentWeather(currentWeather);
-      setWeatherData((prevState) => [...prevState, currentWeather])
       applyColors(currentWeather.description);
     });
 
@@ -67,7 +65,6 @@ function App() {
         });
 
         const referenceDay = getReferenceDay(index + 1);
-
         return {
           date: (new Date(referenceDay * 1000).toString()).slice(0, 3),
           timestamp: referenceDay * 1000,
@@ -103,9 +100,11 @@ function App() {
 
     Promise.all(promises).then((values) => {
       const weatherInfoArray = values.map((res, index) => {
+        const getTimestamp = (+Date.now() + (dayInMiliseconds * (index + 1)))
+  
         return {
-          date: (new Date(res.daily[index].dt * 1000).toString()).slice(0, 3),
-          timestamp: (+Date.now() + (dayInMiliseconds * (index + 1))),
+          date: isToday(res, index),
+          timestamp: getTimestamp,
           temp_min: res.daily[index].temp.min,
           temp_max: res.daily[index].temp.max,
           weatherDescription: res.current.weather[0].main.toLowerCase(),
@@ -115,6 +114,13 @@ function App() {
       setWeatherData((prevState) => [...prevState, ...weatherInfoArray]);
     });
   };
+
+  function isToday(res, index) {
+    if(index === 0) return "Today" 
+    else { 
+      return (new Date(res.daily[index].dt * 1000)).toString().slice(0, 3) 
+    }
+  }
 
   function handleMultipleRequestsForecast(cordinates) {
     return getForecastWeather(cordinates);
