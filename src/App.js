@@ -13,11 +13,11 @@ function App() {
   const [weatherData, setWeatherData] = useState([]);
   const [show, setShow] = useState(false);
 
-  const setCityInput = (event) => {
+  function setCityInput(event) {
     setCity(event.target.value);
   };
 
-  const handleSubmit = (event) => {
+  function handleSubmit(event) {
     event.preventDefault();
     setWeatherData([]);
 
@@ -49,7 +49,7 @@ function App() {
     });
   };
 
-  const callHistoricalAPI = (cordinatesInfo) => {
+  function callHistoricalAPI(cordinatesInfo) {
     const cordinates = cordinatesInfo;
     const previousDays = 5;
     const promises = [];
@@ -89,7 +89,7 @@ function App() {
     return todayTimestamp - dayInSeconds * i;
   }
 
-  const callForecastAPI = (cordinatesInfo) => {
+  function callForecastAPI(cordinatesInfo) {
     const cordinates = cordinatesInfo;
     const dayInMiliseconds = 24 * 60 * 60 * 1000;
     const promises = [];
@@ -126,7 +126,7 @@ function App() {
     return getForecastWeather(cordinates);
   }
 
-  const applyColors = (weatherDescription) => {
+  function applyColors(weatherDescription) {
     const root = document.documentElement;
     root.style.setProperty("--bg-color", "#FCE19C");
     root.style.setProperty("--font-color", "#312915");
@@ -151,14 +151,14 @@ function App() {
     }
   };
 
-  const handleToggle = () => {
+  function handleToggle() {
     if (show) setShow(false);
     else setShow(true);
 
     toggleButton();
   };
 
-  const toggleButton = () => {
+  function toggleButton() {
     const getToggleContainer = document.querySelector(".details-section");
     const getButton = document.querySelector(".toggle-button");
     const getArrow = document.querySelector(".fa-chevron-down");
