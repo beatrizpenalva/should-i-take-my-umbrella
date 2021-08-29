@@ -183,7 +183,6 @@ function App() {
   }
 
   if (weatherData.length > 0) {
-    console.log(orderWeekInfo())
     return (
       <>
         <form className="location-info" onSubmit={handleSubmit}>
@@ -248,8 +247,7 @@ function App() {
           </section>
 
           <section className="week-section">
-            {weatherData.length > 0 &&
-              weatherData.map((item, index) => {
+            {orderWeekInfo().map((item, index) => {
                 return (
                   <WeatherInfo
                     key={index}
