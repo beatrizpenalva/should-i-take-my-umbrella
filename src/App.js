@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-import Logo from "./components/Logo/index";
-import WeatherInfo from "./components/WeatherInfo/index";
-import WeatherDetails from "./components/WeatherDetails/index";
-import WeatherIcon from "./components/WeatherIcon/WeatherIcon";
+import {
+  getCurrentWeather,
+  getCordinates,
+  getHistoricalWeather,
+  getForecastWeather,
+} from "./services";
+import { Logo, WeatherDetails, WeatherIcon, WeatherInfo } from "./components/";
 
 function App() {
   const [city, setCity] = useState("");
@@ -10,131 +13,126 @@ function App() {
   const [weatherData, setWeatherData] = useState([]);
   const [show, setShow] = useState(false);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    setWeatherData([]);
-
-    fetch(
-      `https://api.openweathermap.org/data/2.5/weather?q=${city.toLowerCase()}&units=metric&APPID=7c8b054ddd8f88293b1e0e10e75ba18d`
-    )
-      .then((response) => response.json())
-      .then((res) => {
-        const currentWeather = {
-          description: res.weather[0].description.toLowerCase(),
-          temp: res.main.temp,
-          temp_max: res.main.temp_max,
-          temp_min: res.main.temp_min,
-          humidity: res.main.humidity,
-          wind: res.wind.speed,
-          sunrise: ((new Date(res.sys.sunrise * 1000)).toString()).slice(16,21),
-          sunset: ((new Date(res.sys.sunset * 1000)).toString()).slice(16,21)
-        };
-
-        setCurrentWeather(currentWeather);
-        getCordinates(city);
-        applyColors(currentWeather.description)
-      });
-  };
-
-  const getCordinates = (location) => {
-    fetch(
-      `http://api.openweathermap.org/geo/1.0/direct?q=${location}&appid=7c8b054ddd8f88293b1e0e10e75ba18d`
-    )
-      .then((response) => response.json())
-      .then((res) => {
-        getHistoricalWeather(res[0].lat, res[0].lon);
-      });
-  };
-
-  const getHistoricalWeather = (lat, lon) => {
-    const todayTimestamp = (+Date.now() / 1000).toFixed(0);
-    const dayInSeconds = 24 * 60 * 60;
-    const previousDays = 5;
-
-    for (let i = 1; i <= previousDays; i++) {
-      let referenceDay = todayTimestamp - dayInSeconds * i;
-
-      fetch(
-        `https://api.openweathermap.org/data/2.5/onecall/timemachine?lat=${lat}&lon=${lon}&dt=${referenceDay}&units=metric&appid=7c8b054ddd8f88293b1e0e10e75ba18d`
-      )
-        .then((response) => response.json())
-        .then((res) => {
-          
-          const sortHourTemp = res.hourly.sort(function (a, b) {
-            return a.temp < b.temp ? -1 : a.temp < b.temp ? 1 : 0;
-          });
-
-          const weatherInfo = {
-            date: (new Date(referenceDay * 1000)).toString(),
-            temp_min: sortHourTemp[0].temp,
-            temp_max: sortHourTemp[23].temp,
-            weatherDescription: res.current.weather[0].main.toLowerCase()
-          }
-
-          setWeatherData(prevState => ([...prevState, weatherInfo]))
-        });
-    }
-
-    getForecastWeather(lat, lon);
-  };
-
-  const getForecastWeather = (lat, lon) => {
-    fetch(
-      `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&units=metric&appid=7c8b054ddd8f88293b1e0e10e75ba18d`
-    )
-      .then((response) => response.json())
-      .then((res) => {
-        for (let i = 0; i <= 7; i++) {
-
-          let weatherInfo = {
-            date: (new Date((res.daily[i].dt) * 1000)).toString(),
-            temp_min: res.daily[i].temp.min,
-            temp_max: res.daily[i].temp.max,
-            weatherDescription: res.current.weather[0].main.toLowerCase()
-          }
-
-          setWeatherData(prevState => ([...prevState, weatherInfo]))
-        }
-      });
-  };
-
-  const handleToggle = () => {
-    if(show) setShow(false)
-    else setShow(true)
-
-    toggleButton();
-  }
-
-  const toggleButton = () => {
-    const getToggleContainer = document.querySelector(".details-section")
-    const getButton = document.querySelector(".toggle-button");
-    const getArrow = document.querySelector(".fa-chevron-down")
-
-    if (show) {
-      getToggleContainer.classList.add("display");
-      getArrow.classList.add("display");
-      getButton.innerText = "Less Info"
-    }  
-
-    else {
-      getToggleContainer.classList.remove("display");
-      getArrow.classList.remove("display");
-      getButton.innerText = "More Info"
-    }
-  }
-
-  const setCityInput = (event) => {
+  function setCityInput(event) {
     setCity(event.target.value);
   };
 
-  const applyColors = (weatherDescription) => {
+  function handleSubmit(event) {
+    event.preventDefault();
+    setWeatherData([]);
+
+    getCurrentWeather(city).then((res) => {
+      const currentWeather = {
+        timeStamp: Date.now(),
+        description: res.weather[0].description.toLowerCase(),
+        temp: res.main.temp,
+        temp_max: res.main.temp_max,
+        temp_min: res.main.temp_min,
+        humidity: res.main.humidity,
+        wind: res.wind.speed,
+        sunrise: new Date(res.sys.sunrise * 1000).toString().slice(16, 21),
+        sunset: new Date(res.sys.sunset * 1000).toString().slice(16, 21),
+      };
+
+      setCurrentWeather(currentWeather);
+      applyColors(currentWeather.description);
+    });
+
+    getCordinates(city).then((res) => {
+      const cordinatesInfo = {
+        latitude: res[0].lat,
+        longitude: res[0].lon,
+      };
+
+      callHistoricalAPI(cordinatesInfo);
+      callForecastAPI(cordinatesInfo);
+    });
+  };
+
+  function callHistoricalAPI(cordinatesInfo) {
+    const cordinates = cordinatesInfo;
+    const previousDays = 5;
+    const promises = [];
+
+    for (let i = 1; i <= previousDays; i++) {
+      promises.push(handleMultipleRequestsHistorical(i, cordinates));
+    }
+
+    Promise.all(promises).then((values) => {
+      const weatherInfoArray = values.map((temp, index) => {
+        const sortHourTemp = temp.hourly.sort(function (a, b) {
+          return a.temp < b.temp ? -1 : a.temp < b.temp ? 1 : 0;
+        });
+
+        const referenceDay = getReferenceDay(index + 1);
+        return {
+          date: (new Date(referenceDay * 1000).toString()).slice(0, 3),
+          timestamp: referenceDay * 1000,
+          temp_min: sortHourTemp[0].temp,
+          temp_max: sortHourTemp[23].temp,
+          weatherDescription: temp.current.weather[0].main.toLowerCase(),
+        };
+      });
+
+      setWeatherData((prevState) => [...prevState, ...weatherInfoArray]);
+    });
+  };
+
+  function handleMultipleRequestsHistorical(i, cordinates) {
+    const referenceDay = getReferenceDay(i);
+    return getHistoricalWeather(cordinates, referenceDay);
+  }
+
+  function getReferenceDay(i) {
+    const todayTimestamp = (+Date.now() / 1000).toFixed(0);
+    const dayInSeconds = 24 * 60 * 60;
+    return todayTimestamp - dayInSeconds * i;
+  }
+
+  function callForecastAPI(cordinatesInfo) {
+    const cordinates = cordinatesInfo;
+    const dayInMiliseconds = 24 * 60 * 60 * 1000;
+    const promises = [];
+
+    for (let i = 0; i <= 6; i++) {
+      promises.push(handleMultipleRequestsForecast(cordinates));
+    }
+
+    Promise.all(promises).then((values) => {
+      const weatherInfoArray = values.map((res, index) => {
+        const getTimestamp = (+Date.now() + (dayInMiliseconds * (index + 1)))
+  
+        return {
+          date: isToday(res, index),
+          timestamp: getTimestamp,
+          temp_min: res.daily[index].temp.min,
+          temp_max: res.daily[index].temp.max,
+          weatherDescription: res.current.weather[0].main.toLowerCase(),
+        };
+      });
+
+      setWeatherData((prevState) => [...prevState, ...weatherInfoArray]);
+    });
+  };
+
+  function isToday(res, index) {
+    if(index === 0) return "Today" 
+    else { 
+      return (new Date(res.daily[index].dt * 1000)).toString().slice(0, 3) 
+    }
+  }
+
+  function handleMultipleRequestsForecast(cordinates) {
+    return getForecastWeather(cordinates);
+  }
+
+  function applyColors(weatherDescription) {
     const root = document.documentElement;
+    root.style.setProperty("--bg-color", "#FCE19C");
+    root.style.setProperty("--font-color", "#312915");
+    root.style.setProperty("--icon-color", "#FFC122");
 
-      root.style.setProperty("--bg-color", "#FCE19C");
-      root.style.setProperty("--font-color", "#312915");
-      root.style.setProperty("--icon-color", "#FFC122");
-
-    if(weatherDescription.includes("clouds")) {
+    if (weatherDescription.includes("clouds")) {
       root.style.setProperty("--bg-color", "#D4D9E0");
       root.style.setProperty("--font-color", "#424242");
       root.style.setProperty("--icon-color", "#F0F1F2");
@@ -151,9 +149,40 @@ function App() {
       root.style.setProperty("--font-color", "424242");
       root.style.setProperty("--icon-color", "#FFFFFF");
     }
+  };
+
+  function handleToggle() {
+    if (show) setShow(false);
+    else setShow(true);
+
+    toggleButton();
+  };
+
+  function toggleButton() {
+    const getToggleContainer = document.querySelector(".details-section");
+    const getButton = document.querySelector(".toggle-button");
+    const getArrow = document.querySelector(".fa-chevron-down");
+
+    if (show) {
+      getToggleContainer.classList.add("display");
+      getArrow.classList.add("display");
+      getButton.innerText = "Less Info";
+    } else {
+      getToggleContainer.classList.remove("display");
+      getArrow.classList.remove("display");
+      getButton.innerText = "More Info";
+    }
+  };
+
+  const orderWeekInfo = () => {
+    const sortArr = weatherData.sort(function (a,b) {
+      return a.timestamp < b.timestamp ? -1 : a.timestamp < b.timestamp ? 1 : 0;
+    })
+
+    return sortArr
   }
 
-  if(weatherData.length > 0) {
+  if (weatherData.length > 0) {
     return (
       <>
         <form className="location-info" onSubmit={handleSubmit}>
@@ -170,7 +199,7 @@ function App() {
 
         <section className="container">
           <section className="resume">
-            <WeatherIcon weatherDescription={currentWeather.description}/>
+            <WeatherIcon weatherDescription={currentWeather.description} />
             <h3>{currentWeather.description}</h3>
           </section>
 
@@ -218,41 +247,43 @@ function App() {
           </section>
 
           <section className="week-section">
-            {weatherData.length > 0 && weatherData.map((item, index) => {
-              return <WeatherInfo 
-                key={index}
-                date={item.date.slice(0,3)} 
-                temp_max={item.temp_max} 
-                temp_min={item.temp_min} 
-                weatherDescription={item.weatherDescription}/>
-              })
-            }
+            {orderWeekInfo().map((item, index) => {
+                return (
+                  <WeatherInfo
+                    key={index}
+                    date={item.date}
+                    temp_max={item.temp_max}
+                    temp_min={item.temp_min}
+                    weatherDescription={item.weatherDescription}
+                  />
+                );
+              })}
           </section>
         </section>
       </>
     );
-  }
-
-  else {
+  } else {
     return (
       <main>
-            <section className="home-container">
-                <h1>Should I take my umbrella?</h1>
+        <section className="home-container">
+          <h1>Should I take my umbrella?</h1>
 
-                <form className="location-info" onSubmit={handleSubmit}>
-                    <label> What is your location?
-                    <input
-                        type="text"
-                        placeholder="Example: Salvador, BR"
-                        onChange={setCityInput}
-                    />
-                    </label>
-                </form>
-            </section>
+          <form className="location-info" onSubmit={handleSubmit}>
+            <label>
+              {" "}
+              What is your location?
+              <input
+                type="text"
+                placeholder="Example: Salvador, BR"
+                onChange={setCityInput}
+              />
+            </label>
+          </form>
+        </section>
 
-            <Logo />
-        </main>
-    )
+        <Logo />
+      </main>
+    );
   }
 }
 
