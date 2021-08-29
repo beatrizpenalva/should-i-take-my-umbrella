@@ -23,6 +23,8 @@ function App() {
 
     getCurrentWeather(city).then((res) => {
       const currentWeather = {
+        date: "Today",
+        timeStamp: Date.now(),
         description: res.weather[0].description.toLowerCase(),
         temp: res.main.temp,
         temp_max: res.main.temp_max,
@@ -34,6 +36,7 @@ function App() {
       };
 
       setCurrentWeather(currentWeather);
+      setWeatherData((prevState) => [...prevState, currentWeather])
       applyColors(currentWeather.description);
     });
 
@@ -66,14 +69,15 @@ function App() {
         const referenceDay = getReferenceDay(index + 1);
 
         return {
-          date: new Date(referenceDay * 1000).toString(),
+          date: (new Date(referenceDay * 1000).toString()).slice(0, 3),
+          timestamp: referenceDay * 1000,
           temp_min: sortHourTemp[0].temp,
           temp_max: sortHourTemp[23].temp,
           weatherDescription: temp.current.weather[0].main.toLowerCase(),
         };
       });
 
-      setWeatherData(weatherInfoArray);
+      setWeatherData((prevState) => [...prevState, ...weatherInfoArray]);
     });
   };
 
@@ -90,6 +94,7 @@ function App() {
 
   const callForecastAPI = (cordinatesInfo) => {
     const cordinates = cordinatesInfo;
+    const dayInMiliseconds = 24 * 60 * 60 * 1000;
     const promises = [];
 
     for (let i = 0; i <= 6; i++) {
@@ -99,14 +104,15 @@ function App() {
     Promise.all(promises).then((values) => {
       const weatherInfoArray = values.map((res, index) => {
         return {
-          date: new Date(res.daily[index].dt * 1000).toString(),
+          date: (new Date(res.daily[index].dt * 1000).toString()).slice(0, 3),
+          timestamp: (+Date.now() + (dayInMiliseconds * (index + 1))),
           temp_min: res.daily[index].temp.min,
           temp_max: res.daily[index].temp.max,
           weatherDescription: res.current.weather[0].main.toLowerCase(),
         };
       });
 
-      setWeatherData(weatherInfoArray);
+      setWeatherData((prevState) => [...prevState, ...weatherInfoArray]);
     });
   };
 
@@ -162,7 +168,16 @@ function App() {
     }
   };
 
+  const orderWeekInfo = () => {
+    const sortArr = weatherData.sort(function (a,b) {
+      return a.timestamp < b.timestamp ? -1 : a.timestamp < b.timestamp ? 1 : 0;
+    })
+
+    return sortArr
+  }
+
   if (weatherData.length > 0) {
+    console.log(orderWeekInfo())
     return (
       <>
         <form className="location-info" onSubmit={handleSubmit}>
@@ -232,7 +247,7 @@ function App() {
                 return (
                   <WeatherInfo
                     key={index}
-                    date={item.date.slice(0, 3)}
+                    date={item.date}
                     temp_max={item.temp_max}
                     temp_min={item.temp_min}
                     weatherDescription={item.weatherDescription}
