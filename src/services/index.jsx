@@ -7,7 +7,7 @@ export function getCurrentWeather(city) {
 
 export function getCordinates(city) {
   return fetch(
-    `http://api.openweathermap.org/geo/1.0/direct?q=${city}&appid=7c8b054ddd8f88293b1e0e10e75ba18d`
+    `https://api.openweathermap.org/geo/1.0/direct?q=${city}&appid=7c8b054ddd8f88293b1e0e10e75ba18d`
   )
     .then((response) => response.json())
 };
