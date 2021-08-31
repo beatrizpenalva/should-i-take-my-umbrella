@@ -11,11 +11,7 @@ function App() {
   const [city, setCity] = useState("");
   const [currentWeather, setCurrentWeather] = useState({});
   const [weatherData, setWeatherData] = useState([]);
-  const [show, setShow] = useState(false);
-
-  function setCityInput(event) {
-    setCity(event.target.value);
-  }
+  const [show, setShow] = useState(true);
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -35,7 +31,6 @@ function App() {
       };
 
       setCurrentWeather(currentWeather);
-      applyColors(currentWeather.description);
     });
 
     getCordinates(city).then((res) => {
@@ -60,7 +55,7 @@ function App() {
 
     Promise.all(promises).then((values) => {
       const weatherInfoArray = values.map((temp, index) => {
-        const sortHourTemp = temp.hourly.sort(function (a, b) {
+        const sortHourTemp = temp.hourly.sort((a, b) => {
           return a.temp < b.temp ? -1 : a.temp < b.temp ? 1 : 0;
         });
 
@@ -84,7 +79,7 @@ function App() {
     const promises = [];
 
     for (let i = 0; i <= 6; i++) {
-      promises.push(handleMultipleRequestsForecast(cordinates)); // aqui voce pode usar o getForecastWeather diretamente
+      promises.push(getForecastWeather(cordinates));
     }
 
     Promise.all(promises).then((values) => {
@@ -120,48 +115,24 @@ function App() {
     else return new Date(res.daily[index].dt * 1000).toString().slice(0, 3);
   }
 
-  function handleMultipleRequestsForecast(cordinates) {
-    return getForecastWeather(cordinates);
-  }
-
-  function applyColors(weatherDescription) {
-    // aqui voce pode remover toda essa logia do comp, e colocar essa função em outro arquivo, onde so retorna a classe que voce quer
-    // ai no <main> voce colocria a classe correta
-    const root = document.documentElement;
-    root.style.setProperty("--bg-color", "#FCE19C");
-    root.style.setProperty("--font-color", "#312915");
-    root.style.setProperty("--icon-color", "#FFC122");
-
-    if (weatherDescription.includes("clouds")) {
-      root.style.setProperty("--bg-color", "#D4D9E0");
-      root.style.setProperty("--font-color", "#424242");
-      root.style.setProperty("--icon-color", "#F0F1F2");
-    }
-
-    if (weatherDescription.includes("rain")) {
-      root.style.setProperty("--bg-color", "#9CC2FC");
-      root.style.setProperty("--font-color", "#283A56");
-      root.style.setProperty("--icon-color", "#538FE9");
-    }
-
-    if (weatherDescription.includes("snow")) {
-      root.style.setProperty("--bg-color", "#D4D9E0");
-      root.style.setProperty("--font-color", "424242");
-      root.style.setProperty("--icon-color", "#FFFFFF");
-    }
-  }
-
   const orderWeekInfo = () => {
-    const sortArr = weatherData.sort(function (a, b) {
+    const sortArr = weatherData.sort((a, b) => {
       return a.timestamp < b.timestamp ? -1 : a.timestamp < b.timestamp ? 1 : 0;
     });
 
     return sortArr;
   };
 
+  function applyColors(weatherDescription) {
+    if (weatherDescription.includes("clouds")) return "clouds";
+    if (weatherDescription.includes("rain")) return "rain";
+    if (weatherDescription.includes("snow")) return "snow";
+    return "clear";
+  }
+
   if (weatherData.length > 0) {
     return (
-      <>
+      <main className={applyColors(currentWeather.description)}>
         <form className="location-info" onSubmit={handleSubmit}>
           <label>
             What is your location?
@@ -169,14 +140,16 @@ function App() {
               type="text"
               placeholder="Example: Salvador, BR"
               value={city}
-              onChange={setCityInput}
+              onChange={(event) => setCity(event.target.value)}
             />
           </label>
         </form>
 
         <section className="container">
           <section className="resume">
-            <WeatherIcon weatherDescription={currentWeather.description} />
+            <WeatherIcon
+              weatherDescription={currentWeather.description}
+            />
             <h3>{currentWeather.description}</h3>
           </section>
 
@@ -200,7 +173,7 @@ function App() {
                 className={show ? "toggle-button" : "toggle-button display"}
               >
                 {" "}
-                {show ? "Less" : "More"} info
+                {show ? "More" : "Less"} info
               </span>
               <i
                 className={
@@ -248,11 +221,11 @@ function App() {
             })}
           </section>
         </section>
-      </>
+      </main>
     );
   } else {
     return (
-      <main>
+      <main className="default">
         <section className="home-container">
           <h1>Should I take my umbrella?</h1>
 
@@ -263,7 +236,7 @@ function App() {
               <input
                 type="text"
                 placeholder="Example: Salvador, BR"
-                onChange={setCityInput}
+                onChange={(event) => setCity(event.target.value)}
               />
             </label>
           </form>
