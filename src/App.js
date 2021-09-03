@@ -13,35 +13,54 @@ function App() {
   const [weatherData, setWeatherData] = useState([]);
   const [show, setShow] = useState(true);
 
+  function handleError() {
+    console.log("deu ruim");
+  }
+
   function handleSubmit(event) {
     event.preventDefault();
-    setWeatherData([]);
+    getCurrentWeather(city)
+      .then((res) => {
+        const currentWeather = {
+          timeStamp: Date.now(),
+          description: res.weather[0].description.toLowerCase(),
+          temp: res.main.temp,
+          temp_max: res.main.temp_max,
+          temp_min: res.main.temp_min,
+          humidity: res.main.humidity,
+          wind: res.wind.speed,
+          sunrise: new Date(res.sys.sunrise * 1000).toString().slice(16, 21),
+          sunset: new Date(res.sys.sunset * 1000).toString().slice(16, 21),
+        };
 
-    getCurrentWeather(city).then((res) => {
-      const currentWeather = {
-        timeStamp: Date.now(),
-        description: res.weather[0].description.toLowerCase(),
-        temp: res.main.temp,
-        temp_max: res.main.temp_max,
-        temp_min: res.main.temp_min,
-        humidity: res.main.humidity,
-        wind: res.wind.speed,
-        sunrise: new Date(res.sys.sunrise * 1000).toString().slice(16, 21),
-        sunset: new Date(res.sys.sunset * 1000).toString().slice(16, 21),
-      };
-
-      setCurrentWeather(currentWeather);
-    });
+        setWeatherData([]);
+        setCurrentWeather(currentWeather);
+      })
+      .catch(handleError);
 
     getCordinates(city).then((res) => {
-      const cordinatesInfo = {
-        latitude: res[0].lat,
-        longitude: res[0].lon,
-      };
-
-      callHistoricalAPI(cordinatesInfo);
+      const cordinatesInfo = createCordinatesObject(res)
       callForecastAPI(cordinatesInfo);
+      callHistoricalAPI(cordinatesInfo);
     });
+  }
+
+  function createCordinatesObject(res) {
+    return {
+      latitude: res[0].lat,
+      longitude: res[0].lon,
+    };
+  }
+
+  function callForecastAPI(cordinatesInfo) {
+    const cordinates = cordinatesInfo;
+    const forecastDays = 6;
+    const promises = [];
+
+    for (let i = 0; i <= forecastDays; i++) {
+      promises.push(getForecastWeather(cordinates));
+    }
+    createWeatherObj(promises);
   }
 
   function callHistoricalAPI(cordinatesInfo) {
@@ -50,19 +69,22 @@ function App() {
     const promises = [];
 
     for (let i = 1; i <= previousDays; i++) {
-      promises.push(handleMultipleRequestsHistorical(i, cordinates));
+      const fixErr = (getTimestampPast(i) / 1000).toFixed(0)
+      promises.push(getHistoricalWeather(cordinates, fixErr))
     }
 
+    createWeatherOjcPast(promises);
+  }
+
+  function createWeatherOjcPast(promises) {
     Promise.all(promises).then((values) => {
       const weatherInfoArray = values.map((temp, index) => {
-        const sortHourTemp = temp.hourly.sort((a, b) => {
-          return a.temp < b.temp ? -1 : a.temp < b.temp ? 1 : 0;
-        });
+        const sortHourTemp = getMinAndMaxTemp(temp);
+        const getDate = getTimestampPast(index + 1) / 1000;
 
-        const referenceDay = getReferenceDay(index + 1);
         return {
-          date: new Date(referenceDay * 1000).toString().slice(0, 3),
-          timestamp: referenceDay * 1000,
+          date: isToday(getDate, index),
+          timestamp: getDate,
           temp_min: sortHourTemp[0].temp,
           temp_max: sortHourTemp[23].temp,
           weatherDescription: temp.current.weather[0].main.toLowerCase(),
@@ -73,22 +95,14 @@ function App() {
     });
   }
 
-  function callForecastAPI(cordinatesInfo) {
-    const cordinates = cordinatesInfo;
-    const dayInMiliseconds = 24 * 60 * 60 * 1000;
-    const promises = [];
-
-    for (let i = 0; i <= 6; i++) {
-      promises.push(getForecastWeather(cordinates));
-    }
-
+  function createWeatherObj(promises) {
     Promise.all(promises).then((values) => {
       const weatherInfoArray = values.map((res, index) => {
-        const getTimestamp = +Date.now() + dayInMiliseconds * (index + 1);
+        const getDate = res.daily[index].dt
 
         return {
-          date: isToday(res, index),
-          timestamp: getTimestamp,
+          date: isToday(getDate, index),
+          timestamp: getTimestampFuture(index),
           temp_min: res.daily[index].temp.min,
           temp_max: res.daily[index].temp.max,
           weatherDescription: res.current.weather[0].main.toLowerCase(),
@@ -99,35 +113,44 @@ function App() {
     });
   }
 
-  function handleMultipleRequestsHistorical(i, cordinates) {
-    const referenceDay = getReferenceDay(i);
-    return getHistoricalWeather(cordinates, referenceDay);
+  function getTimestampPast(index) {
+    const dayInMiliseconds = 24 * 60 * 60 * 1000
+    return +Date.now() - (dayInMiliseconds * (index));
   }
 
-  function getReferenceDay(i) {
-    const todayTimestamp = (+Date.now() / 1000).toFixed(0);
-    const dayInSeconds = 24 * 60 * 60;
-    return todayTimestamp - dayInSeconds * i;
+  function getTimestampFuture(index) {
+    const dayInMiliseconds = 24 * 60 * 60 * 1000  
+    return +Date.now() + (dayInMiliseconds * (index));
   }
 
+  //if tem que ser diferente, pois em uma requisição o item 0 da array é ontem e não hoje
   function isToday(res, index) {
+    const convertMiliToSeconds = 1000;
+
     if (!index) return "Today";
-    else return new Date(res.daily[index].dt * 1000).toString().slice(0, 3);
+    else
+      return new Date(res * convertMiliToSeconds)
+        .toString()
+        .slice(0, 3);
+  }
+
+  function getMinAndMaxTemp(temp) {
+    return temp.hourly.sort((a, b) => {
+      return a.temp < b.temp ? -1 : a.temp < b.temp ? 1 : 0;
+    });
   }
 
   const orderWeekInfo = () => {
-    const sortArr = weatherData.sort((a, b) => {
+    return weatherData.sort((a, b) => {
       return a.timestamp < b.timestamp ? -1 : a.timestamp < b.timestamp ? 1 : 0;
     });
-
-    return sortArr;
   };
 
   function applyColors(weatherDescription) {
     if (weatherDescription.includes("clouds")) return "clouds";
-    if (weatherDescription.includes("rain")) return "rain";
-    if (weatherDescription.includes("snow")) return "snow";
-    return "clear";
+    else if (weatherDescription.includes("rain")) return "rain";
+    else if (weatherDescription.includes("snow")) return "snow";
+    else return "clear";
   }
 
   if (weatherData.length > 0) {
@@ -147,9 +170,7 @@ function App() {
 
         <section className="container">
           <section className="resume">
-            <WeatherIcon
-              weatherDescription={currentWeather.description}
-            />
+            <WeatherIcon weatherDescription={currentWeather.description} />
             <h3>{currentWeather.description}</h3>
           </section>
 
@@ -168,11 +189,13 @@ function App() {
               </section>
             </section>
 
-            <button onClick={() => setShow(!show)}>
+            <button
+              onClick={() => setShow(!show)}
+              className={applyColors(currentWeather.description)}
+            >
               <span
                 className={show ? "toggle-button" : "toggle-button display"}
               >
-                {" "}
                 {show ? "More" : "Less"} info
               </span>
               <i
@@ -231,7 +254,6 @@ function App() {
 
           <form className="location-info" onSubmit={handleSubmit}>
             <label>
-              {" "}
               What is your location?
               <input
                 type="text"

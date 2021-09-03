@@ -25,4 +25,3 @@ export function getForecastWeather(cordinates) {
   )
     .then((response) => response.json())
 }
-  
