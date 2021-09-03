@@ -37,8 +37,7 @@ function App() {
     });
   }
 
-  function callForecastAPI(cordinatesInfo) {
-    const cordinates = cordinatesInfo;
+  function callForecastAPI(cordinates) {
     const forecastDays = 6;
     const promises = [];
 
@@ -48,14 +47,13 @@ function App() {
     handleMultiplePromises(promises, createWeatherObjFuture);
   }
 
-  function callHistoricalAPI(cordinatesInfo) {
-    const cordinates = cordinatesInfo;
+  function callHistoricalAPI(cordinates) {
     const previousDays = 5;
     const promises = [];
 
     for (let i = 1; i <= previousDays; i++) {
-      const fixErr = (getTimestampPast(i) / 1000).toFixed(0);
-      promises.push(getHistoricalWeather(cordinates, fixErr));
+      const referenceDay = (getTimestampPast(i) / 1000).toFixed(0);
+      promises.push(getHistoricalWeather(cordinates, referenceDay));
     }
 
     handleMultiplePromises(promises, createWeatherObjPast);

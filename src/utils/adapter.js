@@ -1,6 +1,6 @@
 import {
     isToday, getMinAndMaxTemp, getTimestampPast, getTimestampFuture
-  } from "./utils/index";
+} from "./index";
 
 export function createWeatherObjToday(res) {
     return {
