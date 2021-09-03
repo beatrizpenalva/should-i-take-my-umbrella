@@ -5,12 +5,13 @@ import {
   getHistoricalWeather,
   getForecastWeather,
 } from "./services";
+
 import {
-  getTimestampPast,
-  getTimestampFuture,
-  isToday,
-  getMinAndMaxTemp,
-} from "./utils";
+  createWeatherObjToday,
+  createWeatherObjPast,
+  createWeatherObjFuture,
+} from "./utils/adapter";
+import { getTimestampPast } from "./utils/index";
 import { Logo, WeatherDetails, WeatherIcon, WeatherInfo } from "./components/";
 
 function App() {
@@ -21,11 +22,10 @@ function App() {
 
   function handleSubmit(event) {
     event.preventDefault();
-    getCurrentWeather(city)
-      .then((res) => {
-        setWeatherData([]);
-        setCurrentWeather(createWeatherObjToday(res));
-      })
+    getCurrentWeather(city).then((res) => {
+      setWeatherData([]);
+      setCurrentWeather(createWeatherObjToday(res));
+    });
 
     getCordinates(city).then((res) => {
       const cordinatesInfo = {
@@ -45,7 +45,7 @@ function App() {
     for (let i = 0; i <= forecastDays; i++) {
       promises.push(getForecastWeather(cordinates));
     }
-    createWeatherObj(promises);
+    handleMultiplePromises(promises, createWeatherObjFuture);
   }
 
   function callHistoricalAPI(cordinatesInfo) {
@@ -58,56 +58,14 @@ function App() {
       promises.push(getHistoricalWeather(cordinates, fixErr));
     }
 
-    createWeatherOjcPast(promises);
+    handleMultiplePromises(promises, createWeatherObjPast);
   }
 
-  function createWeatherObjToday(res) {
-    return {
-      timeStamp: Date.now(),
-      description: res.weather[0].description.toLowerCase(),
-      temp: res.main.temp,
-      temp_max: res.main.temp_max,
-      temp_min: res.main.temp_min,
-      humidity: res.main.humidity,
-      wind: res.wind.speed,
-      sunrise: new Date(res.sys.sunrise * 1000).toString().slice(16, 21),
-      sunset: new Date(res.sys.sunset * 1000).toString().slice(16, 21),
-    };
-  }
-
-  function createWeatherOjcPast(promises) {
+  function handleMultiplePromises(promises, callback) {
     Promise.all(promises).then((values) => {
       const weatherInfoArray = values.map((temp, index) => {
-        const sortHourTemp = getMinAndMaxTemp(temp);
-        const getDate = getTimestampPast(index + 1) / 1000;
-
-        return {
-          date: isToday(getDate, index),
-          timestamp: getDate,
-          temp_min: sortHourTemp[0].temp,
-          temp_max: sortHourTemp[23].temp,
-          weatherDescription: temp.current.weather[0].main.toLowerCase(),
-        };
+        return callback(temp, index);
       });
-
-      setWeatherData((prevState) => [...prevState, ...weatherInfoArray]);
-    });
-  }
-
-  function createWeatherObj(promises) {
-    Promise.all(promises).then((values) => {
-      const weatherInfoArray = values.map((res, index) => {
-        const getDate = res.daily[index].dt;
-
-        return {
-          date: isToday(getDate, index),
-          timestamp: getTimestampFuture(index),
-          temp_min: res.daily[index].temp.min,
-          temp_max: res.daily[index].temp.max,
-          weatherDescription: res.current.weather[0].main.toLowerCase(),
-        };
-      });
-
       setWeatherData((prevState) => [...prevState, ...weatherInfoArray]);
     });
   }
