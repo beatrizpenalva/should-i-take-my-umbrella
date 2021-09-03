@@ -24,3 +24,7 @@ export function getMinAndMaxTemp(temp) {
     return a.temp < b.temp ? -1 : a.temp < b.temp ? 1 : 0;
   });
 }
+
+export function convertTimestamp(i) {
+  return (getTimestampPast(i) / 1000).toFixed(0)
+}

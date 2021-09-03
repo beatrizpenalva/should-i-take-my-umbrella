@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import {
   getCurrentWeather,
   getCordinates,
-  getHistoricalWeather,
+  callHistoricalAPI,
   getForecastWeather,
 } from "./services";
 
@@ -11,7 +11,7 @@ import {
   createWeatherObjPast,
   createWeatherObjFuture,
 } from "./utils/adapter";
-import { getTimestampPast } from "./utils/index";
+import { convertTimestamp } from "./utils/index";
 import { Logo, WeatherDetails, WeatherIcon, WeatherInfo } from "./components/";
 
 function App() {
@@ -33,7 +33,7 @@ function App() {
         longitude: res[0].lon,
       };
       callForecastAPI(cordinatesInfo);
-      callHistoricalAPI(cordinatesInfo);
+      getHistoricalWeather(cordinatesInfo);
     });
   }
 
@@ -47,13 +47,12 @@ function App() {
     handleMultiplePromises(promises, createWeatherObjFuture);
   }
 
-  function callHistoricalAPI(cordinates) {
+  function getHistoricalWeather(cordinates) {
     const previousDays = 5;
     const promises = [];
 
     for (let i = 1; i <= previousDays; i++) {
-      const referenceDay = (getTimestampPast(i) / 1000).toFixed(0);
-      promises.push(getHistoricalWeather(cordinates, referenceDay));
+      promises.push(callHistoricalAPI(cordinates, convertTimestamp(i)));
     }
 
     handleMultiplePromises(promises, createWeatherObjPast);
