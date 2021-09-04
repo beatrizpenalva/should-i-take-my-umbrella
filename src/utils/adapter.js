@@ -40,3 +40,10 @@ export function createWeatherObjFuture(res, index) {
         weatherDescription: res.current.weather[0].main.toLowerCase(),
     };
 }
+
+export function createCordinatesObj(res) {
+    return {
+        latitude: res[0].lat,
+        longitude: res[0].lon,
+    }
+}

@@ -10,6 +10,7 @@ import {
   createWeatherObjToday,
   createWeatherObjPast,
   createWeatherObjFuture,
+  createCordinatesObj,
 } from "./utils/adapter";
 import { convertTimestamp } from "./utils/index";
 import { Logo, WeatherDetails, WeatherIcon, WeatherInfo } from "./components/";
@@ -27,13 +28,10 @@ function App() {
     });
 
     getCordinates(city).then((res) => {
-      const cordinatesInfo = {
-        latitude: res[0].lat,
-        longitude: res[0].lon,
-      };
+      const cordinates = createCordinatesObj(res);
       setWeatherData([]);
-      getForecastWeather(cordinatesInfo);
-      getHistoricalWeather(cordinatesInfo);
+      getForecastWeather(cordinates);
+      getHistoricalWeather(cordinates);
     });
   }
 
@@ -71,7 +69,7 @@ function App() {
     return weatherData.sort((a, b) => {
       return a.timestamp < b.timestamp ? -1 : a.timestamp < b.timestamp ? 1 : 0;
     });
-  }
+  };
 
   function applyColors(weatherDescription) {
     if (weatherDescription.includes("clouds")) return "clouds";
