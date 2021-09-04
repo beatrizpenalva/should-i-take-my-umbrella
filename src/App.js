@@ -2,200 +2,105 @@ import React, { useState } from "react";
 import {
   getCurrentWeather,
   getCordinates,
-  getHistoricalWeather,
-  getForecastWeather,
+  callHistoricalAPI,
+  callForecastAPI,
 } from "./services";
-import { Logo, WeatherDetails, WeatherIcon, WeatherInfo } from "./components/";
+
+import {
+  createWeatherObjToday,
+  createWeatherObjPast,
+  createWeatherObjFuture,
+  createCordinatesObj,
+} from "./utils/adapter";
+import { convertTimestamp } from "./utils/index";
+import {
+  Logo,
+  WeatherDetails,
+  WeatherIcon,
+  WeatherInfo,
+  LocationForm,
+} from "./components/";
 
 function App() {
   const [city, setCity] = useState("");
   const [currentWeather, setCurrentWeather] = useState({});
   const [weatherData, setWeatherData] = useState([]);
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(true);
+  const [error, setErrorMessage] = useState("");
 
-  function setCityInput(event) {
+  function handleChange(event) {
     setCity(event.target.value);
-  };
+  }
 
   function handleSubmit(event) {
     event.preventDefault();
-    setWeatherData([]);
-
     getCurrentWeather(city).then((res) => {
-      const currentWeather = {
-        timeStamp: Date.now(),
-        description: res.weather[0].description.toLowerCase(),
-        temp: res.main.temp,
-        temp_max: res.main.temp_max,
-        temp_min: res.main.temp_min,
-        humidity: res.main.humidity,
-        wind: res.wind.speed,
-        sunrise: new Date(res.sys.sunrise * 1000).toString().slice(16, 21),
-        sunset: new Date(res.sys.sunset * 1000).toString().slice(16, 21),
-      };
+      if (res.message) setErrorMessage(res.message);
+      else {
+        setCurrentWeather(createWeatherObjToday(res));
 
-      setCurrentWeather(currentWeather);
-      applyColors(currentWeather.description);
+        getCordinates(city).then((res) => {
+          const cordinates = createCordinatesObj(res);
+          setWeatherData([]);
+          getForecastWeather(cordinates);
+          getHistoricalWeather(cordinates);
+        });
+      }
     });
+  }
 
-    getCordinates(city).then((res) => {
-      const cordinatesInfo = {
-        latitude: res[0].lat,
-        longitude: res[0].lon,
-      };
+  function getForecastWeather(cordinates) {
+    const forecastDays = 6;
+    const promises = [];
 
-      callHistoricalAPI(cordinatesInfo);
-      callForecastAPI(cordinatesInfo);
-    });
-  };
+    for (let i = 0; i <= forecastDays; i++) {
+      promises.push(callForecastAPI(cordinates));
+    }
+    handleMultiplePromises(promises, createWeatherObjFuture);
+  }
 
-  function callHistoricalAPI(cordinatesInfo) {
-    const cordinates = cordinatesInfo;
+  function getHistoricalWeather(cordinates) {
     const previousDays = 5;
     const promises = [];
 
     for (let i = 1; i <= previousDays; i++) {
-      promises.push(handleMultipleRequestsHistorical(i, cordinates));
+      promises.push(callHistoricalAPI(cordinates, convertTimestamp(i)));
     }
 
+    handleMultiplePromises(promises, createWeatherObjPast);
+  }
+
+  function handleMultiplePromises(promises, callback) {
     Promise.all(promises).then((values) => {
       const weatherInfoArray = values.map((temp, index) => {
-        const sortHourTemp = temp.hourly.sort(function (a, b) {
-          return a.temp < b.temp ? -1 : a.temp < b.temp ? 1 : 0;
-        });
-
-        const referenceDay = getReferenceDay(index + 1);
-        return {
-          date: (new Date(referenceDay * 1000).toString()).slice(0, 3),
-          timestamp: referenceDay * 1000,
-          temp_min: sortHourTemp[0].temp,
-          temp_max: sortHourTemp[23].temp,
-          weatherDescription: temp.current.weather[0].main.toLowerCase(),
-        };
+        return callback(temp, index);
       });
-
       setWeatherData((prevState) => [...prevState, ...weatherInfoArray]);
     });
-  };
-
-  function handleMultipleRequestsHistorical(i, cordinates) {
-    const referenceDay = getReferenceDay(i);
-    return getHistoricalWeather(cordinates, referenceDay);
   }
-
-  function getReferenceDay(i) {
-    const todayTimestamp = (+Date.now() / 1000).toFixed(0);
-    const dayInSeconds = 24 * 60 * 60;
-    return todayTimestamp - dayInSeconds * i;
-  }
-
-  function callForecastAPI(cordinatesInfo) {
-    const cordinates = cordinatesInfo;
-    const dayInMiliseconds = 24 * 60 * 60 * 1000;
-    const promises = [];
-
-    for (let i = 0; i <= 6; i++) {
-      promises.push(handleMultipleRequestsForecast(cordinates));
-    }
-
-    Promise.all(promises).then((values) => {
-      const weatherInfoArray = values.map((res, index) => {
-        const getTimestamp = (+Date.now() + (dayInMiliseconds * (index + 1)))
-  
-        return {
-          date: isToday(res, index),
-          timestamp: getTimestamp,
-          temp_min: res.daily[index].temp.min,
-          temp_max: res.daily[index].temp.max,
-          weatherDescription: res.current.weather[0].main.toLowerCase(),
-        };
-      });
-
-      setWeatherData((prevState) => [...prevState, ...weatherInfoArray]);
-    });
-  };
-
-  function isToday(res, index) {
-    if(index === 0) return "Today" 
-    else { 
-      return (new Date(res.daily[index].dt * 1000)).toString().slice(0, 3) 
-    }
-  }
-
-  function handleMultipleRequestsForecast(cordinates) {
-    return getForecastWeather(cordinates);
-  }
-
-  function applyColors(weatherDescription) {
-    const root = document.documentElement;
-    root.style.setProperty("--bg-color", "#FCE19C");
-    root.style.setProperty("--font-color", "#312915");
-    root.style.setProperty("--icon-color", "#FFC122");
-
-    if (weatherDescription.includes("clouds")) {
-      root.style.setProperty("--bg-color", "#D4D9E0");
-      root.style.setProperty("--font-color", "#424242");
-      root.style.setProperty("--icon-color", "#F0F1F2");
-    }
-
-    if (weatherDescription.includes("rain")) {
-      root.style.setProperty("--bg-color", "#9CC2FC");
-      root.style.setProperty("--font-color", "#283A56");
-      root.style.setProperty("--icon-color", "#538FE9");
-    }
-
-    if (weatherDescription.includes("snow")) {
-      root.style.setProperty("--bg-color", "#D4D9E0");
-      root.style.setProperty("--font-color", "424242");
-      root.style.setProperty("--icon-color", "#FFFFFF");
-    }
-  };
-
-  function handleToggle() {
-    if (show) setShow(false);
-    else setShow(true);
-
-    toggleButton();
-  };
-
-  function toggleButton() {
-    const getToggleContainer = document.querySelector(".details-section");
-    const getButton = document.querySelector(".toggle-button");
-    const getArrow = document.querySelector(".fa-chevron-down");
-
-    if (show) {
-      getToggleContainer.classList.add("display");
-      getArrow.classList.add("display");
-      getButton.innerText = "Less Info";
-    } else {
-      getToggleContainer.classList.remove("display");
-      getArrow.classList.remove("display");
-      getButton.innerText = "More Info";
-    }
-  };
 
   const orderWeekInfo = () => {
-    const sortArr = weatherData.sort(function (a,b) {
+    return weatherData.sort((a, b) => {
       return a.timestamp < b.timestamp ? -1 : a.timestamp < b.timestamp ? 1 : 0;
-    })
+    });
+  };
 
-    return sortArr
+  function applyColors(weatherDescription) {
+    if (weatherDescription.includes("clouds")) return "clouds";
+    else if (weatherDescription.includes("rain")) return "rain";
+    else if (weatherDescription.includes("snow")) return "snow";
+    else return "clear";
   }
 
   if (weatherData.length > 0) {
     return (
-      <>
-        <form className="location-info" onSubmit={handleSubmit}>
-          <label>
-            What is your location?
-            <input
-              type="text"
-              placeholder="Example: Salvador, BR"
-              value={city}
-              onChange={setCityInput}
-            />
-          </label>
-        </form>
+      <main className={applyColors(currentWeather.description)}>
+        <LocationForm
+          handleSubmit={handleSubmit}
+          error={error}
+          city={city}
+          handleChange={handleChange}
+        />
 
         <section className="container">
           <section className="resume">
@@ -218,12 +123,25 @@ function App() {
               </section>
             </section>
 
-            <button onClick={handleToggle}>
-              <span className="toggle-button"> More info</span>
-              <i className="fas fa-chevron-down"></i>
+            <button
+              onClick={() => setShow(!show)}
+              className={applyColors(currentWeather.description)}
+            >
+              <span
+                className={show ? "toggle-button" : "toggle-button display"}
+              >
+                {show ? "More" : "Less"} info
+              </span>
+              <i
+                className={
+                  show ? "fas fa-chevron-down" : "fas fa-chevron-down display"
+                }
+              ></i>
             </button>
 
-            <section className="details-section">
+            <section
+              className={show ? "details-section" : "details-section display"}
+            >
               <WeatherDetails
                 contents={"Humidity"}
                 info={currentWeather.humidity + "%"}
@@ -248,37 +166,31 @@ function App() {
 
           <section className="week-section">
             {orderWeekInfo().map((item, index) => {
-                return (
-                  <WeatherInfo
-                    key={index}
-                    date={item.date}
-                    temp_max={item.temp_max}
-                    temp_min={item.temp_min}
-                    weatherDescription={item.weatherDescription}
-                  />
-                );
-              })}
+              return (
+                <WeatherInfo
+                  key={index}
+                  date={item.date}
+                  temp_max={item.temp_max}
+                  temp_min={item.temp_min}
+                  weatherDescription={item.weatherDescription}
+                />
+              );
+            })}
           </section>
         </section>
-      </>
+      </main>
     );
   } else {
     return (
-      <main>
+      <main className="default">
         <section className="home-container">
           <h1>Should I take my umbrella?</h1>
-
-          <form className="location-info" onSubmit={handleSubmit}>
-            <label>
-              {" "}
-              What is your location?
-              <input
-                type="text"
-                placeholder="Example: Salvador, BR"
-                onChange={setCityInput}
-              />
-            </label>
-          </form>
+          <LocationForm
+            handleSubmit={handleSubmit}
+            error={error}
+            city={city}
+            handleChange={handleChange}
+          />
         </section>
 
         <Logo />
