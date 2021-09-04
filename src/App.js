@@ -3,7 +3,7 @@ import {
   getCurrentWeather,
   getCordinates,
   callHistoricalAPI,
-  getForecastWeather,
+  callForecastAPI,
 } from "./services";
 
 import {
@@ -23,7 +23,6 @@ function App() {
   function handleSubmit(event) {
     event.preventDefault();
     getCurrentWeather(city).then((res) => {
-      setWeatherData([]);
       setCurrentWeather(createWeatherObjToday(res));
     });
 
@@ -32,17 +31,18 @@ function App() {
         latitude: res[0].lat,
         longitude: res[0].lon,
       };
-      callForecastAPI(cordinatesInfo);
+      setWeatherData([]);
+      getForecastWeather(cordinatesInfo);
       getHistoricalWeather(cordinatesInfo);
     });
   }
 
-  function callForecastAPI(cordinates) {
+  function getForecastWeather(cordinates) {
     const forecastDays = 6;
     const promises = [];
 
     for (let i = 0; i <= forecastDays; i++) {
-      promises.push(getForecastWeather(cordinates));
+      promises.push(callForecastAPI(cordinates));
     }
     handleMultiplePromises(promises, createWeatherObjFuture);
   }
@@ -71,7 +71,7 @@ function App() {
     return weatherData.sort((a, b) => {
       return a.timestamp < b.timestamp ? -1 : a.timestamp < b.timestamp ? 1 : 0;
     });
-  };
+  }
 
   function applyColors(weatherDescription) {
     if (weatherDescription.includes("clouds")) return "clouds";
