@@ -12,7 +12,6 @@
 
 
 <p align="center">
- <a href="#-about">About</a> •
  <a href="#-development">Features</a> • 
  <a href="#-development">User Interface</a> • 
  <a href="#-getting-started">Getting Started</a> • 
@@ -22,19 +21,9 @@
 
 ---
 
-## 💡 About
-
-The challenge was to use the [Open Weather API](https://openweathermap.org/) to create a weather app.
-
-<p align="right">
-  <a href="#umbrella"> Back to the top. </a>
-</p>
-
----
-
 ## ⚙️ Features
 
-The user just needs to type the city location and can see information about:
+The challenge was to use the [Open Weather API](https://openweathermap.org/) to create a weather app. The user just needs to type the city location and can see information about:
 
 - [x] Current temperature
 - [x] Info about today's weather
@@ -44,7 +33,7 @@ The user just needs to type the city location and can see information about:
     - [x] Sunrise time
     - [x] Sunset time
 
-- Info about five days ago weather and six days from now
+- [x] Info about five days ago weather and six days from now
     - [x] Weather summary
     - [x] Maximum e minimum tempeture
 
@@ -66,12 +55,12 @@ To focus on simplicity and send the message, the color palette changes according
 The family font used in the project is [Nunito](https://fonts.google.com/specimen/Nunito?query=nunito) and iconography is from [Font Awesome](https://fontawesome.com/start) library. You can see all screen prototypes on [Figma](https://www.figma.com/file/B0bGP0rzRS5vSJT5sqd0F0/Should_I_take_my_umbrella?node-id=0%3A1).
 
 <p align="center">
-    <img src="src/img/color-palette.png"></img>
+    <img src="./img/color_palette_typography.png"></img>
 </p>
 
 ### ✍ If it's a cloudy day: the main color is gray
 
-<p align="center">
+<p>
     <img src="./img/Mobile_Clouds.png" alt="High fidelity mobile User Interface for cloudy days"></img>
     <br>
     🔎 Click on the image to enlarge 
@@ -79,7 +68,7 @@ The family font used in the project is [Nunito](https://fonts.google.com/specime
 
 ### ✍ If it's a rainy day: the main color is blue
 
-<p align="center">
+<p>
     <img src="./img/Mobile_Rain.png" alt="High fidelity mobile User Interface for rainy days"></img>
     <br>
     🔎 Click on the image to enlarge 
@@ -87,7 +76,7 @@ The family font used in the project is [Nunito](https://fonts.google.com/specime
 
 ### ✍ If it's a snowing day: the main color is white
 
-<p align="center">
+<p>
     <img src="./img/Mobile_Snow.png" alt="High fidelity mobile User Interface for snowy days"></img>
     <br>
     🔎 Click on the image to enlarge 
@@ -95,7 +84,7 @@ The family font used in the project is [Nunito](https://fonts.google.com/specime
 
 ### ✍ If it's a sunny day: the main color is yellow
 
-<p align="center">
+<p>
     <img src="./img/Mobile_Clear.png" alt="High fidelity mobile User Interface for warm days"></img>
     <br>
     🔎 Click on the image to enlarge 
@@ -103,7 +92,7 @@ The family font used in the project is [Nunito](https://fonts.google.com/specime
 
 ### ✍ Home mobile
 
-<p align="center">
+<p>
     <img src="./img/Mobile_Home_Initial.png" alt="High fidelity mobile User Interface page home"></img>
     <br>
     🔎 Click on the image to enlarge 
@@ -111,8 +100,16 @@ The family font used in the project is [Nunito](https://fonts.google.com/specime
 
 ### ✍ Home Desktop
 
-<p align="center">
-    <img src="./img/Desktop_Home.png" alt="High fidelity mobile User Interface page home"></img>
+<p>
+    <img src="./img/Desktop_Home.png" alt="High fidelity desktop User Interface page home"></img>
+    <br>
+    🔎 Click on the image to enlarge 
+</p>
+
+### ✍ Clear weather Desktop
+
+<p>
+    <img src="./img/Desktop_Clear_Details.png" alt="High fidelity desktop User Interface page clear weather"></img>
     <br>
     🔎 Click on the image to enlarge 
 </p>
