@@ -28,7 +28,3 @@ export function getMinAndMaxTemp(temp) {
 export function convertTimestamp(i) {
   return (getTimestampPast(i) / 1000).toFixed(0)
 }
-
-export function handleError(message) {
-  console.log(message)
-}

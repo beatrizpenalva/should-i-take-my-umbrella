@@ -12,7 +12,7 @@ import {
   createWeatherObjFuture,
   createCordinatesObj,
 } from "./utils/adapter";
-import { convertTimestamp, handleError } from "./utils/index";
+import { convertTimestamp } from "./utils/index";
 import { Logo, WeatherDetails, WeatherIcon, WeatherInfo } from "./components/";
 
 function App() {
@@ -20,12 +20,13 @@ function App() {
   const [currentWeather, setCurrentWeather] = useState({});
   const [weatherData, setWeatherData] = useState([]);
   const [show, setShow] = useState(true);
+  const [error, setErrorMessage] = useState("");
 
   function handleSubmit(event) {
     event.preventDefault();
     getCurrentWeather(city)
       .then((res) => {
-        if (res.message) handleError(res.message)
+        if (res.message) setErrorMessage(res.message)
         else {
           setCurrentWeather(createWeatherObjToday(res));
           
@@ -97,6 +98,8 @@ function App() {
             />
           </label>
         </form>
+
+        <p>{error}</p>
 
         <section className="container">
           <section className="resume">
@@ -193,6 +196,8 @@ function App() {
               />
             </label>
           </form>
+
+          <p>{error}</p>
         </section>
 
         <Logo />
