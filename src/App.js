@@ -13,7 +13,13 @@ import {
   createCordinatesObj,
 } from "./utils/adapter";
 import { convertTimestamp } from "./utils/index";
-import { Logo, WeatherDetails, WeatherIcon, WeatherInfo } from "./components/";
+import {
+  Logo,
+  WeatherDetails,
+  WeatherIcon,
+  WeatherInfo,
+  LocationForm,
+} from "./components/";
 
 function App() {
   const [city, setCity] = useState("");
@@ -22,22 +28,25 @@ function App() {
   const [show, setShow] = useState(true);
   const [error, setErrorMessage] = useState("");
 
+  function handleChange(event) {
+    setCity(event.target.value);
+  }
+
   function handleSubmit(event) {
     event.preventDefault();
-    getCurrentWeather(city)
-      .then((res) => {
-        if (res.message) setErrorMessage(res.message)
-        else {
-          setCurrentWeather(createWeatherObjToday(res));
-          
-          getCordinates(city).then((res) => {
-            const cordinates = createCordinatesObj(res);
-            setWeatherData([]);
-            getForecastWeather(cordinates);
-            getHistoricalWeather(cordinates);
-          });
-        }
-      })
+    getCurrentWeather(city).then((res) => {
+      if (res.message) setErrorMessage(res.message);
+      else {
+        setCurrentWeather(createWeatherObjToday(res));
+
+        getCordinates(city).then((res) => {
+          const cordinates = createCordinatesObj(res);
+          setWeatherData([]);
+          getForecastWeather(cordinates);
+          getHistoricalWeather(cordinates);
+        });
+      }
+    });
   }
 
   function getForecastWeather(cordinates) {
@@ -86,20 +95,12 @@ function App() {
   if (weatherData.length > 0) {
     return (
       <main className={applyColors(currentWeather.description)}>
-        <form className="location-info" onSubmit={handleSubmit}>
-          <label>
-            What is your location?
-            <input
-              type="text"
-              placeholder="Example: Salvador, BR"
-              required
-              value={city}
-              onChange={(event) => setCity(event.target.value)}
-            />
-          </label>
-        </form>
-
-        <p>{error}</p>
+        <LocationForm
+          handleSubmit={handleSubmit}
+          error={error}
+          city={city}
+          handleChange={handleChange}
+        />
 
         <section className="container">
           <section className="resume">
@@ -184,20 +185,12 @@ function App() {
       <main className="default">
         <section className="home-container">
           <h1>Should I take my umbrella?</h1>
-
-          <form className="location-info" onSubmit={handleSubmit}>
-            <label>
-              What is your location?
-              <input
-                type="text"
-                placeholder="Example: Salvador, BR"
-                required
-                onChange={(event) => setCity(event.target.value)}
-              />
-            </label>
-          </form>
-
-          <p>{error}</p>
+          <LocationForm
+            handleSubmit={handleSubmit}
+            error={error}
+            city={city}
+            handleChange={handleChange}
+          />
         </section>
 
         <Logo />
