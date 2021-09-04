@@ -1,5 +1,5 @@
 import React from "react";
-// import "./style.css";
+import "./style.css";
 
 const LocationForm = ({ handleSubmit, error, city, handleChange }) => {
   return (
@@ -15,7 +15,7 @@ const LocationForm = ({ handleSubmit, error, city, handleChange }) => {
         />
       </label>
 
-      <p>{error}</p>
+      <p className="error-text">{error}</p>
     </form>
   );
 };
