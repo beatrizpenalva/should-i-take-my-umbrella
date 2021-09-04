@@ -12,7 +12,7 @@ import {
   createWeatherObjFuture,
   createCordinatesObj,
 } from "./utils/adapter";
-import { convertTimestamp } from "./utils/index";
+import { convertTimestamp, handleError } from "./utils/index";
 import { Logo, WeatherDetails, WeatherIcon, WeatherInfo } from "./components/";
 
 function App() {
@@ -23,16 +23,20 @@ function App() {
 
   function handleSubmit(event) {
     event.preventDefault();
-    getCurrentWeather(city).then((res) => {
-      setCurrentWeather(createWeatherObjToday(res));
-    });
-
-    getCordinates(city).then((res) => {
-      const cordinates = createCordinatesObj(res);
-      setWeatherData([]);
-      getForecastWeather(cordinates);
-      getHistoricalWeather(cordinates);
-    });
+    getCurrentWeather(city)
+      .then((res) => {
+        if (res.message) handleError(res.message)
+        else {
+          setCurrentWeather(createWeatherObjToday(res));
+          
+          getCordinates(city).then((res) => {
+            const cordinates = createCordinatesObj(res);
+            setWeatherData([]);
+            getForecastWeather(cordinates);
+            getHistoricalWeather(cordinates);
+          });
+        }
+      })
   }
 
   function getForecastWeather(cordinates) {
