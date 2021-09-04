@@ -1,70 +1,244 @@
-# Getting Started with Create React App
+<h1 align="center" id="umbrella"> ☔ Should I take my umbrella? </h1>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<p align="center">
+  A weather app so you do not get caught by surprise for the rain.
+  <br>
+  ⚡ To access click <a href='https://should-i-take-my-umbrella.vercel.app/'>here</a>! ⚡ 
+</p>
 
-## Available Scripts
+<h4 align="center"> 
+	🚧 In construction  🚧
+</h4>
 
-In the project directory, you can run:
 
-### `npm start`
+<p align="center">
+ <a href="#-about">About</a> •
+ <a href="#-development">Features</a> • 
+ <a href="#-development">User Interface</a> • 
+ <a href="#-getting-started">Getting Started</a> • 
+ <a href="#-build-with">Build With</a> • 
+ <a href="#-author">Author</a>
+</p>
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+---
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## 💡 About
 
-### `npm test`
+The challenge was to use the [Open Weather API](https://openweathermap.org/) to create a weather app.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+<p align="right">
+  <a href="#umbrella"> Back to the top. </a>
+</p>
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## ⚙️ Features
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+The user just needs to type the city location and can see information about:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- [x] Current temperature
+- [x] Info about today's weather
+    - [x] Maximum e minimum tempeture
+    - [x] Humidity
+    - [x] Wind speed
+    - [x] Sunrise time
+    - [x] Sunset time
 
-### `npm run eject`
+- Info about five days ago weather and six days from now
+    - [x] Weather summary
+    - [x] Maximum e minimum tempeture
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### 🚧 Future implementations
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- [ ] Get user location.
+- [ ] City form autocomplete.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+<p align="right">
+  <a href="#umbrella"> Back to the top. </a>
+</p>
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+---
 
-## Learn More
+## 🎨 User interface
+The layout was designed with the Mobile First and KISS (Keep It Simple and Stupid) concept.
+To focus on simplicity and send the message, the color palette changes according to the weather but keeping them in the same tone.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+The family font used in the project is [Nunito](https://fonts.google.com/specimen/Nunito?query=nunito) and iconography is from [Font Awesome](https://fontawesome.com/start) library. You can see all screen prototypes on [Figma](https://www.figma.com/file/B0bGP0rzRS5vSJT5sqd0F0/Should_I_take_my_umbrella?node-id=0%3A1).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+<p align="center">
+    <img src="src/img/color-palette.png"></img>
+</p>
 
-### Code Splitting
+### ✍ If it's a cloudy day: the main color is gray
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+<p align="center">
+    <img src="./img/Mobile_Clouds.png" alt="High fidelity mobile User Interface for cloudy days"></img>
+    <br>
+    🔎 Click on the image to enlarge 
+</p>
 
-### Analyzing the Bundle Size
+### ✍ If it's a rainy day: the main color is blue
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+<p align="center">
+    <img src="./img/Mobile_Rain.png" alt="High fidelity mobile User Interface for rainy days"></img>
+    <br>
+    🔎 Click on the image to enlarge 
+</p>
 
-### Making a Progressive Web App
+### ✍ If it's a snowing day: the main color is white
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+<p align="center">
+    <img src="./img/Mobile_Snow.png" alt="High fidelity mobile User Interface for snowy days"></img>
+    <br>
+    🔎 Click on the image to enlarge 
+</p>
 
-### Advanced Configuration
+### ✍ If it's a sunny day: the main color is yellow
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+<p align="center">
+    <img src="./img/Mobile_Clear.png" alt="High fidelity mobile User Interface for warm days"></img>
+    <br>
+    🔎 Click on the image to enlarge 
+</p>
 
-### Deployment
+### ✍ Home mobile
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+<p align="center">
+    <img src="./img/Mobile_Home_Initial.png" alt="High fidelity mobile User Interface page home"></img>
+    <br>
+    🔎 Click on the image to enlarge 
+</p>
 
-### `npm run build` fails to minify
+### ✍ Home Desktop
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+<p align="center">
+    <img src="./img/Desktop_Home.png" alt="High fidelity mobile User Interface page home"></img>
+    <br>
+    🔎 Click on the image to enlarge 
+</p>
+
+<p align="right">
+  <a href="#umbrella"> Back to the top. </a>
+</p>
+
+---
+
+## 🚀 Getting Started
+
+📂 The file is structured as follows:
+
+```text
+./
+├── .gitignore
+├── README.md
+├── package.json
+├── package-lock.json
+├── img
+├── public
+│   ├── index.html
+│   └── manifest.json
+└── src
+    ├── App.js
+    ├── index.css
+    ├── index.js
+    ├── reportWebVitals.js
+    ├── components
+    │   ├── LocationForm
+    │   │   ├── index.jsx
+    │   │   └── style.css
+    │   ├── Logo
+    │   │   ├── index.jsx
+    │   │   └── style.css    
+    │   ├── WeatherDetails
+    │   │   ├── index.jsx
+    │   │   └── style.css
+    │   ├── WeatherIcon
+    │   │   ├── index.jsx
+    │   │   └── style.css
+    │   ├── WeatherInfo
+    │   │   ├── index.jsx
+    │   │   └── style.css
+    │   └── index.jsx
+    ├── services
+    │   └── index.js
+    └── utils
+        ├── adapter.js
+        └── index.js
+```
+
+🔰 Before running the app, you need to have installed these tools on your computer: [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/).
+
+```bash
+
+# Fork the repository
+
+# To clone this repository on your computer run:
+$ git clone https://github.com/beatrizpenalva/should-i-take-my-umbrella.git
+
+# To install the dependencies in your project's directory run:
+$ npm install
+
+# To execute the app on development  mode run:
+$ npm run start
+
+# The app will be open on port:3000 - access http://localhost:3000
+
+```
+
+👊 To contribute to this project:
+
+```bash
+
+# After installing the repository on your computer, create a new branch with your updates:
+$ git checkout -b my-feature
+
+# Save your changes
+$ git add .
+
+# Create a commit message telling what you did:
+$ git commit -m "feature: My new feature"
+
+# Send your contribution to this repository
+$ git push origin my-feature
+
+```
+
+<p align="right">
+  <a href="#umbrella"> Back to the top. </a>
+</p>
+
+---
+
+## 👩‍💻 Build With
+
+&nbsp;
+🛠 React.JS
+
+&nbsp;
+🛠 JavaScript ES6
+
+&nbsp;
+🛠 HTML5
+
+&nbsp;
+🛠 CSS3
+
+<p align="right">
+  <a href="#umbrella"> Back to the top. </a>
+</p>
+
+---
+
+## 🦸 Author
+
+<p align="center">
+  Developed with ❤️ by <a href="https://github.com/beatrizpenalva">Beatriz Penalva</a>, find me on <a href="https://www.linkedin.com/in/beatrizpenalva/">Linkedin</a>. 👋
+</p>
+
+<p align="center">
+  <img src="https://i2.wp.com/www.dailycal.org/assets/uploads/2014/02/tumblr_n1gcnx8D9H1stb99no1_500.gif" alt="Scene from singing in the rain"></img>
+</p>
+
+<p align="right">
+  <a href="#umbrella"> Back to the top. </a>
+</p>
