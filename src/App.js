@@ -87,6 +87,7 @@ function App() {
             <input
               type="text"
               placeholder="Example: Salvador, BR"
+              required
               value={city}
               onChange={(event) => setCity(event.target.value)}
             />
@@ -183,6 +184,7 @@ function App() {
               <input
                 type="text"
                 placeholder="Example: Salvador, BR"
+                required
                 onChange={(event) => setCity(event.target.value)}
               />
             </label>
