@@ -37,6 +37,7 @@ function App() {
     getCurrentWeather(city).then((res) => {
       if (res.message) setErrorMessage(res.message);
       else {
+        setErrorMessage("");
         setCurrentWeather(createWeatherObjToday(res));
 
         getCordinates(city).then((res) => {
