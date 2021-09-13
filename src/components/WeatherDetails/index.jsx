@@ -11,6 +11,12 @@ const WeatherDetails = ({contents, info}) => {
         else if (typeOfInfo === "sunset") return  "fas fa-sun icon"
     }
 
+    // function get() {
+    //     const typeOfInfo = contents.toLowerCase();
+    //     if (typeOfInfo === "wind") return "m/s"
+    //     else (typeOfInfo === "humidity") return "%"
+    // }
+
     return (
         <section className="details-info">
             <i className={getClass()}></i>

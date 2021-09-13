@@ -85,6 +85,14 @@ function App() {
     });
   };
 
+  const weatherKeys = () => {
+    return Object.keys(currentWeather);
+  };
+
+  const weatherValues = (key) => {
+    return currentWeather[key];
+  };
+
   function applyColors(weatherDescription) {
     if (weatherDescription.includes("clouds")) return "clouds";
     else if (weatherDescription.includes("rain")) return "rain";
@@ -142,25 +150,16 @@ function App() {
             <section
               className={show ? "details-section" : "details-section display"}
             >
-              <WeatherDetails
-                contents={"Humidity"}
-                info={currentWeather.humidity + "%"}
-              />
-
-              <WeatherDetails
-                contents={"Wind"}
-                info={currentWeather.wind + "m/s"}
-              />
-
-              <WeatherDetails
-                contents={"Sunrise"}
-                info={currentWeather.sunrise}
-              />
-
-              <WeatherDetails
-                contents={"Sunset"}
-                info={currentWeather.sunset}
-              />
+              {weatherKeys().map((item, index) => {
+                if (index > 4)
+                  return (
+                    <WeatherDetails
+                      key={index}
+                      contents={item}
+                      info={weatherValues(item)}
+                    />
+                  );
+              })}
             </section>
           </section>
 
