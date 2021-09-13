@@ -8,8 +8,8 @@ const WeatherInfo = ({date, temp_max, temp_min, weatherDescription}) => {
             <h4 className="week-day">{date}</h4>
             <section className="temp-info">
                 <WeatherIcon weatherDescription={weatherDescription}/>
-                <p>{Math.round(temp_max)}</p>
-                <p className="temp-min">{Math.round(temp_min)}</p>
+                <p>{Math.round(temp_max)}º</p>
+                <p className="temp-min">{Math.round(temp_min)}º</p>
             </section>
         </section>
     )
