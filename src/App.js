@@ -23,7 +23,7 @@ import {
 
 function App() {
   const [city, setCity] = useState("");
-  const [currentWeather, setCurrentWeather] = useState({});
+  const [currentWeather, setCurrentWeather] = useState();
   const [weatherData, setWeatherData] = useState([]);
   const [show, setShow] = useState(true);
   const [error, setErrorMessage] = useState("");
@@ -101,86 +101,7 @@ function App() {
     else return "clear";
   }
 
-  if (weatherData.length > 0) {
-    return (
-      <main className={applyColors(currentWeather.description)}>
-        <LocationForm
-          handleSubmit={handleSubmit}
-          error={error}
-          city={city}
-          handleChange={handleChange}
-        />
-
-        <section className="container">
-          <section className="resume">
-            <WeatherIcon weatherDescription={currentWeather.description} />
-            <h3>{currentWeather.description}</h3>
-          </section>
-
-          <section className="info-container">
-            <h1>{Math.round(currentWeather.temp)} ºC</h1>
-
-            <section className="tempeture-info">
-              <section>
-                <p>min</p>
-                <h3>{Math.round(currentWeather.temp_min)}</h3>
-              </section>
-
-              <section>
-                <p>max</p>
-                <h3>{Math.round(currentWeather.temp_max)}</h3>
-              </section>
-            </section>
-
-            <button
-              onClick={() => setShow(!show)}
-              className={applyColors(currentWeather.description)}
-            >
-              <span
-                className={show ? "toggle-button" : "toggle-button display"}
-              >
-                {show ? "More" : "Less"} info
-              </span>
-              <i
-                className={
-                  show ? "fas fa-chevron-down" : "fas fa-chevron-down display"
-                }
-              ></i>
-            </button>
-
-            <section
-              className={show ? "details-section" : "details-section display"}
-            >
-              {weatherKeys().map((item, index) => {
-                if (index > 4)
-                  return (
-                    <WeatherDetails
-                      key={index}
-                      contents={item}
-                      info={weatherValues(item)}
-                    />
-                  );
-              })}
-            </section>
-          </section>
-
-          <section className="week-section">
-            {orderWeekInfo().map((item, index) => {
-              return (
-                <WeatherInfo
-                  key={index}
-                  date={item.date}
-                  temp_max={item.temp_max}
-                  temp_min={item.temp_min}
-                  weatherDescription={item.weatherDescription}
-                />
-              );
-            })}
-          </section>
-        </section>
-      </main>
-    );
-  } else {
+  if (!currentWeather) {
     return (
       <HomePage
         handleSubmit={handleSubmit}
@@ -190,6 +111,83 @@ function App() {
       />
     );
   }
+
+  return (
+    <main className={applyColors(currentWeather.description)}>
+      <LocationForm
+        handleSubmit={handleSubmit}
+        error={error}
+        city={city}
+        handleChange={handleChange}
+      />
+
+      <section className="container">
+        <section className="resume">
+          <WeatherIcon weatherDescription={currentWeather.description} />
+          <h3>{currentWeather.description}</h3>
+        </section>
+
+        <section className="info-container">
+          <h1>{Math.round(currentWeather.temp)} ºC</h1>
+
+          <section className="tempeture-info">
+            <section>
+              <p>min</p>
+              <h3>{Math.round(currentWeather.temp_min)}</h3>
+            </section>
+
+            <section>
+              <p>max</p>
+              <h3>{Math.round(currentWeather.temp_max)}</h3>
+            </section>
+          </section>
+
+          <button
+            onClick={() => setShow(!show)}
+            className={applyColors(currentWeather.description)}
+          >
+            <span className={show ? "toggle-button" : "toggle-button display"}>
+              {show ? "More" : "Less"} info
+            </span>
+            <i
+              className={
+                show ? "fas fa-chevron-down" : "fas fa-chevron-down display"
+              }
+            ></i>
+          </button>
+
+          <section
+            className={show ? "details-section" : "details-section display"}
+          >
+            {weatherKeys().map((item, index) => {
+              if (index > 4)
+                return (
+                  <WeatherDetails
+                    key={index}
+                    contents={item}
+                    info={weatherValues(item)}
+                  />
+                );
+            })}
+          </section>
+        </section>
+
+        <section className="week-section">
+          {orderWeekInfo().map((item, index) => {
+            return (
+              <WeatherInfo
+                key={index}
+                date={item.date}
+                temp_max={item.temp_max}
+                temp_min={item.temp_min}
+                weatherDescription={item.weatherDescription}
+              />
+            );
+          })}
+        </section>
+      </section>
+    </main>
+  );
 }
 
 export default App;
