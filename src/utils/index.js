@@ -1,22 +1,21 @@
 export function getTimestampPast(index) {
-  const dayInMiliseconds = 24 * 60 * 60 * 1000
-  return +Date.now() - (dayInMiliseconds * (index));
+  const dayInMiliseconds = 24 * 60 * 60 * 1000;
+  return +Date.now() - dayInMiliseconds * index;
 }
 
-export  function getTimestampFuture(index) {
-  const dayInMiliseconds = 24 * 60 * 60 * 1000  
-  return +Date.now() + (dayInMiliseconds * (index));
+export function getTimestampFuture(index) {
+  const dayInMiliseconds = 24 * 60 * 60 * 1000;
+  return +Date.now() + dayInMiliseconds * index;
 }
 
-//if tem que ser diferente, pois em uma requisição o item 0 da array é ontem e não hoje
-export  function isToday(res, index) {
+export function isToday(res, index) {
   const convertMiliToSeconds = 1000;
 
-  if (!index) return "Today";
-  else
-    return new Date(res * convertMiliToSeconds)
-      .toString()
-      .slice(0, 3);
+  const getToday = new Date().toString();
+  const getDay = new Date(res * convertMiliToSeconds).toString();
+
+  if (getToday.slice(0, 10) === getDay.slice(0, 10)) return "Today";
+  else return getDay.slice(0, 3);
 }
 
 export function getMinAndMaxTemp(temp) {
@@ -26,5 +25,5 @@ export function getMinAndMaxTemp(temp) {
 }
 
 export function convertTimestamp(i) {
-  return (getTimestampPast(i) / 1000).toFixed(0)
+  return (getTimestampPast(i) / 1000).toFixed(0);
 }
