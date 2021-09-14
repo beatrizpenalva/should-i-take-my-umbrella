@@ -21,7 +21,7 @@ export function createWeatherObjPast(temp, index) {
     const getDate = getTimestampPast(index + 1) / 1000;
 
     return {
-        date: isToday(getDate, index),
+        date: isToday(getDate),
         timestamp: getDate,
         temp_min: sortHourTemp[0].temp,
         temp_max: sortHourTemp[23].temp,
@@ -33,7 +33,7 @@ export function createWeatherObjFuture(res, index) {
     const getDate = res.daily[index].dt;
 
     return {
-        date: isToday(getDate, index),
+        date: isToday(getDate),
         timestamp: getTimestampFuture(index),
         temp_min: res.daily[index].temp.min,
         temp_max: res.daily[index].temp.max,

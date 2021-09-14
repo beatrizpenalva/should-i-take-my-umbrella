@@ -8,13 +8,13 @@ export function getTimestampFuture(index) {
   return +Date.now() + dayInMiliseconds * index;
 }
 
-export function isToday(res, index) {
+export function isToday(res) {
   const convertMiliToSeconds = 1000;
 
-  const getToday = new Date().toString();
-  const getDay = new Date(res * convertMiliToSeconds).toString();
+  const getToday = new Date().toString().slice(0, 10);
+  const getDay = new Date(res * convertMiliToSeconds).toString().slice(0, 10);
 
-  if (getToday.slice(0, 10) === getDay.slice(0, 10)) return "Today";
+  if (getToday === getDay) return "Today";
   else return getDay.slice(0, 3);
 }
 
