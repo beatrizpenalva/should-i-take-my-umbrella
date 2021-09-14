@@ -52,7 +52,7 @@ The challenge was to use the [Open Weather API](https://openweathermap.org/) to 
 The layout was designed with the Mobile First and KISS (Keep It Simple and Stupid) concept.
 To focus on simplicity and send the message, the color palette changes according to the weather but keeping them in the same tone.
 
-The family font used in the project is [Nunito](https://fonts.google.com/specimen/Nunito?query=nunito) and iconography is from [Font Awesome](https://fontawesome.com/start) library. You can see all screen prototypes on [Figma](https://www.figma.com/file/B0bGP0rzRS5vSJT5sqd0F0/Should_I_take_my_umbrella?node-id=0%3A1).
+The family font used in the project is [Nunito](https://fonts.google.com/specimen/Nunito?query=nunito) and iconography is from [Font Awesome](https://fontawesome.com/start) library. You can see all screen prototypes on [Figma](https://www.figma.com/file/67H6oBRw0TqcV3gYmzqInr/GitHub-Projects?node-id=704%3A2).
 
 <p align="center">
     <img src="./img/color_palette_typography.png"></img>
