@@ -14,7 +14,7 @@ import {
 } from "./utils/adapter";
 import { convertTimestamp } from "./utils/index";
 import {
-  Logo,
+  HomePage,
   WeatherDetails,
   WeatherIcon,
   WeatherInfo,
@@ -57,7 +57,7 @@ function App() {
     for (let i = 0; i <= forecastDays; i++) {
       promises.push(callForecastAPI(cordinates));
     }
-    handleMultiplePromises(promises, createWeatherObjFuture);
+    setWeatherState(promises, createWeatherObjFuture);
   }
 
   function getHistoricalWeather(cordinates) {
@@ -68,10 +68,10 @@ function App() {
       promises.push(callHistoricalAPI(cordinates, convertTimestamp(i)));
     }
 
-    handleMultiplePromises(promises, createWeatherObjPast);
+    setWeatherState(promises, createWeatherObjPast);
   }
 
-  function handleMultiplePromises(promises, callback) {
+  function setWeatherState(promises, callback) {
     Promise.all(promises).then((values) => {
       const weatherInfoArray = values.map((temp, index) => {
         return callback(temp, index);
@@ -182,19 +182,12 @@ function App() {
     );
   } else {
     return (
-      <main className="default">
-        <section className="home-container">
-          <h1>Should I take my umbrella?</h1>
-          <LocationForm
-            handleSubmit={handleSubmit}
-            error={error}
-            city={city}
-            handleChange={handleChange}
-          />
-        </section>
-
-        <Logo />
-      </main>
+      <HomePage
+        handleSubmit={handleSubmit}
+        error={error}
+        city={city}
+        handleChange={handleChange}
+      />
     );
   }
 }
